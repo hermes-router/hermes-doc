@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; Hermes 0.1a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="What is Hermes?" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/hermes_logo_w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/hermes-router/hermes">github.com/hermes-router/hermes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-hermes">Installing Hermes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-data-storage">Create data storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-postgresql">Installing Postgresql</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-redash">Installing Redash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adapting-configuration-files">Adapting configuration files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Code Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hermes</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-hermes">
+<h2>Installing Hermes<a class="headerlink" href="#installing-hermes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">dcmtk</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">sudo</span> <span class="n">adduser</span> <span class="n">hermes</span>
+<span class="n">ssh</span> <span class="n">hermes</span><span class="nd">@localhost</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hermes</span><span class="o">-</span><span class="n">router</span><span class="o">/</span><span class="n">hermes</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="n">hermes</span><span class="o">/</span><span class="n">installation</span>
+<span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">exit</span>
+<span class="n">cd</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">hermes</span><span class="o">/</span><span class="n">hermes</span><span class="o">/</span><span class="n">installation</span>
+<span class="n">sudo</span> <span class="n">cp</span> <span class="o">*.</span><span class="n">service</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">hermes_bookkeeper</span><span class="o">.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">hermes_cleaner</span><span class="o">.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">hermes_dispatcher</span><span class="o">.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">hermes_receiver</span><span class="o">.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">hermes_router</span><span class="o">.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">hermes_ui</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-data-storage">
+<h2>Create data storage<a class="headerlink" href="#create-data-storage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">hermes</span><span class="nd">@localhost</span>
+<span class="n">mkdir</span> <span class="n">hermes</span><span class="o">-</span><span class="n">data</span><span class="p">;</span> <span class="n">cd</span> <span class="n">hermes</span><span class="o">-</span><span class="n">data</span>
+<span class="n">mkdir</span> <span class="n">incoming</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">outgoing</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">success</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">error</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">discard</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-postgresql">
+<h2>Installing Postgresql<a class="headerlink" href="#installing-postgresql" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">postgresql</span> <span class="n">postgresql</span><span class="o">-</span><span class="n">contrib</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span>
+<span class="n">createuser</span> <span class="o">-</span><span class="n">P</span> <span class="n">hermes</span>
+<span class="n">createuser</span> <span class="o">-</span><span class="n">P</span> <span class="n">redash</span>
+<span class="n">createdb</span> <span class="n">hermes</span>
+<span class="n">psql</span>
+<span class="n">ALTER</span> <span class="n">USER</span> <span class="n">hermes</span> <span class="n">WITH</span> <span class="n">PASSWORD</span> <span class="s1">&#39;[hermes pwd]&#39;</span><span class="p">;</span>
+<span class="n">ALTER</span> <span class="n">USER</span> <span class="n">redash</span> <span class="n">WITH</span> <span class="n">PASSWORD</span> <span class="s1">&#39;[redash pwd]&#39;</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">hermes</span> <span class="n">to</span> <span class="n">hermes</span><span class="p">;</span>
+\<span class="n">c</span> <span class="n">hermes</span>
+<span class="n">GRANT</span> <span class="n">CONNECT</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">hermes</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">USAGE</span> <span class="n">ON</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">SELECT</span> <span class="n">ON</span> <span class="n">ALL</span> <span class="n">TABLES</span> <span class="n">IN</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+<span class="n">ALTER</span> <span class="n">DEFAULT</span> <span class="n">PRIVILEGES</span> <span class="n">IN</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">GRANT</span> <span class="n">SELECT</span> <span class="n">ON</span> <span class="n">TABLES</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+\<span class="n">q</span>
+<span class="n">exit</span>
+<span class="o">------</span>
+<span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">pg_hba</span><span class="o">.</span><span class="n">conf</span>
+
+<span class="c1"># Add the following line to file:</span>
+    <span class="n">host</span>    <span class="nb">all</span>             <span class="nb">all</span>             <span class="mf">172.16</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mi">12</span>           <span class="n">md5</span>
+<span class="o">------</span>
+<span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="n">main</span><span class="o">/</span><span class="n">postgresql</span><span class="o">.</span><span class="n">conf</span>
+
+<span class="c1"># Uncomment and add 172.17.0.1 to the following line to file:</span>
+    <span class="n">listen_addresses</span> <span class="o">=</span> <span class="s1">&#39;localhost, 172.17.0.1&#39;</span> <span class="c1"># what IP address(es) to listen on;</span>
+<span class="o">------</span>
+<span class="n">sudo</span> <span class="n">service</span> <span class="n">postgresql</span> <span class="n">restart</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-redash">
+<h2>Installing Redash<a class="headerlink" href="#installing-redash" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">getredash</span><span class="o">/</span><span class="n">redash</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">setup</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">chmod</span> <span class="mi">700</span> <span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">sudo</span> <span class="o">./</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Open redash configuration page:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">server</span> <span class="n">ip</span><span class="p">]:</span><span class="mi">5000</span><span class="o">/</span><span class="n">setup</span>
+</pre></div>
+</div>
+<p>Configure datasource using the settings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Type</span><span class="p">:</span> <span class="n">Postgres</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">Hermes</span>
+<span class="n">Host</span><span class="p">:</span> <span class="mf">172.17</span><span class="o">.</span><span class="mf">0.1</span>
+<span class="n">Port</span><span class="p">:</span> <span class="mi">5432</span>
+<span class="n">User</span><span class="p">:</span> <span class="n">redash</span>
+<span class="n">Password</span><span class="p">:</span> <span class="p">[</span><span class="k">as</span> <span class="n">selected</span> <span class="n">above</span><span class="p">]</span>
+<span class="n">Database</span> <span class="n">Name</span><span class="p">:</span> <span class="n">hermes</span>
+</pre></div>
+</div>
+<p>Save and test connection</p>
+</div>
+<div class="section" id="adapting-configuration-files">
+<h2>Adapting configuration files<a class="headerlink" href="#adapting-configuration-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Change SECRET_KEY in webgui.env (change port and host if needed)</p></li>
+<li><p>Change database password in bookkeeper.env (change port and host if needed)</p></li>
+<li><p>Change installation paths in hermes.json if needed</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="intro.html" class="btn btn-neutral float-left" title="What is Hermes?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

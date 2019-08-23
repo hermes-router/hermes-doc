@@ -1,0 +1,541 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>common package &mdash; Hermes 0.1a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="dispatch package" href="dispatch.html" />
+    <link rel="prev" title="cleaner module" href="cleaner.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/hermes_logo_w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/hermes-router/hermes">github.com/hermes-router/hermes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">common package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.config">common.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.helper">common.helper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.monitor">common.monitor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hermes</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Code Documentation</a> &raquo;</li>
+        
+      <li>common package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="common-package">
+<h1>common package<a class="headerlink" href="#common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-common.config">
+<span id="common-config-module"></span><h2>common.config module<a class="headerlink" href="#module-common.config" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.config.checkFolders">
+<code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">checkFolders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#checkFolders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.checkFolders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all required folders for storing DICOMs exist.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.config.read_config">
+<code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">read_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#read_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.read_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the configuration settings (rules, targets, general settings) from the configuration file. The configuration will
+only be updated if the file has changed compared the the last function call. If the configuration file is locked by 
+another process, an exception will be raised.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.config.save_config">
+<code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">save_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#save_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.save_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the current configuration in a file on the disk. Raises an exception if the file has 
+been locked by another process.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.helper">
+<span id="common-helper-module"></span><h2>common.helper module<a class="headerlink" href="#module-common.helper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="common.helper.RepeatedTimer">
+<em class="property">class </em><code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">RepeatedTimer</code><span class="sig-paren">(</span><em class="sig-param">interval</em>, <em class="sig-param">function</em>, <em class="sig-param">exit_function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#RepeatedTimer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper class for running a continuous timer that is suspended
+while the worker function is running</p>
+<dl class="method">
+<dt id="common.helper.RepeatedTimer.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#RepeatedTimer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.RepeatedTimer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the timer for triggering the calllback after the defined interval.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="common.helper.RepeatedTimer.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#RepeatedTimer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.RepeatedTimer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the timer and executes the defined exit callback function.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.g_log">
+<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">g_log</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#g_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.g_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends diagnostic information to graphite (if configured).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.has_been_send">
+<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">has_been_send</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#has_been_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.has_been_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given folder has already been sent.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.isTerminated">
+<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">isTerminated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#isTerminated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.isTerminated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the process will terminate after the current task.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.is_ready_for_sending">
+<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">is_ready_for_sending</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#is_ready_for_sending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.is_ready_for_sending" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a case in the outgoing folder is ready for sending by the dispatcher.</p>
+<p>No lock file (.lock) should be in sending folder and no error file (.error),
+if there is one  copy/move is not done yet. Also at least some dicom files
+should be there for sending.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.sendToGraphite">
+<em class="property">async </em><code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">sendToGraphite</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#sendToGraphite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.sendToGraphite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for asynchronous graphite call to avoid wait time of main loop.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.triggerTerminate">
+<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">triggerTerminate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#triggerTerminate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.triggerTerminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trigger that the processing loop should terminate after finishing the currently active task.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.monitor">
+<span id="common-monitor-module"></span><h2>common.monitor module<a class="headerlink" href="#module-common.monitor" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.monitor.configure">
+<code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">instance</em>, <em class="sig-param">address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/monitor.html#configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the connection to the bookkeeper module. If not called, events
+will not be transmitted to the bookkeeper.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="common.monitor.h_events">
+<em class="property">class </em><code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">h_events</code><a class="reference internal" href="_modules/common/monitor.html#h_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.h_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Event types for general Hermes monitoring.</p>
+<dl class="attribute">
+<dt id="common.monitor.h_events.BOOT">
+<code class="sig-name descname">BOOT</code><em class="property"> = 'BOOT'</em><a class="headerlink" href="#common.monitor.h_events.BOOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.h_events.CONFIG_UPDATE">
+<code class="sig-name descname">CONFIG_UPDATE</code><em class="property"> = 'CONFIG_UPDATE'</em><a class="headerlink" href="#common.monitor.h_events.CONFIG_UPDATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.h_events.PROCESSING">
+<code class="sig-name descname">PROCESSING</code><em class="property"> = 'PROCESSING'</em><a class="headerlink" href="#common.monitor.h_events.PROCESSING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.h_events.SHUTDOWN">
+<code class="sig-name descname">SHUTDOWN</code><em class="property"> = 'SHUTDOWN'</em><a class="headerlink" href="#common.monitor.h_events.SHUTDOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.h_events.SHUTDOWN_REQUEST">
+<code class="sig-name descname">SHUTDOWN_REQUEST</code><em class="property"> = 'SHUTDOWN_REQUEST'</em><a class="headerlink" href="#common.monitor.h_events.SHUTDOWN_REQUEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.h_events.UKNOWN">
+<code class="sig-name descname">UKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.h_events.UKNOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="common.monitor.s_events">
+<em class="property">class </em><code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">s_events</code><a class="reference internal" href="_modules/common/monitor.html#s_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.s_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Event types for monitoring everything related to one specific series.</p>
+<dl class="attribute">
+<dt id="common.monitor.s_events.CLEAN">
+<code class="sig-name descname">CLEAN</code><em class="property"> = 'CLEAN'</em><a class="headerlink" href="#common.monitor.s_events.CLEAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.DISCARD">
+<code class="sig-name descname">DISCARD</code><em class="property"> = 'DISCARD'</em><a class="headerlink" href="#common.monitor.s_events.DISCARD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.DISPATCH">
+<code class="sig-name descname">DISPATCH</code><em class="property"> = 'DISPATCH'</em><a class="headerlink" href="#common.monitor.s_events.DISPATCH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.ERROR">
+<code class="sig-name descname">ERROR</code><em class="property"> = 'ERROR'</em><a class="headerlink" href="#common.monitor.s_events.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.REGISTERED">
+<code class="sig-name descname">REGISTERED</code><em class="property"> = 'REGISTERED'</em><a class="headerlink" href="#common.monitor.s_events.REGISTERED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.ROUTE">
+<code class="sig-name descname">ROUTE</code><em class="property"> = 'ROUTE'</em><a class="headerlink" href="#common.monitor.s_events.ROUTE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.UKNOWN">
+<code class="sig-name descname">UKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.s_events.UKNOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="common.monitor.send_event">
+<code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">send_event</code><span class="sig-paren">(</span><em class="sig-param">event</em>, <em class="sig-param">severity=0</em>, <em class="sig-param">description=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/monitor.html#send_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.send_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends information about general Hermes events to the bookkeeper (e.g., during module start).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.monitor.send_register_series">
+<code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">send_register_series</code><span class="sig-paren">(</span><em class="sig-param">tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/monitor.html#send_register_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.send_register_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a received series on the bookkeeper. This should be called when a series has been 
+fully received and the DICOM tags have been parsed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.monitor.send_series_event">
+<code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">send_series_event</code><span class="sig-paren">(</span><em class="sig-param">event</em>, <em class="sig-param">series_uid</em>, <em class="sig-param">file_count</em>, <em class="sig-param">target</em>, <em class="sig-param">info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/monitor.html#send_series_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.send_series_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send an event related to a specific series to the bookkeeper.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.monitor.send_webgui_event">
+<code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">send_webgui_event</code><span class="sig-paren">(</span><em class="sig-param">event</em>, <em class="sig-param">user</em>, <em class="sig-param">description=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/monitor.html#send_webgui_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.send_webgui_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends information about an event on the webgui to the bookkeeper.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="common.monitor.severity">
+<em class="property">class </em><code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">severity</code><a class="reference internal" href="_modules/common/monitor.html#severity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.severity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Severity level associated to the Hermes events.</p>
+<dl class="attribute">
+<dt id="common.monitor.severity.CRITICAL">
+<code class="sig-name descname">CRITICAL</code><em class="property"> = 3</em><a class="headerlink" href="#common.monitor.severity.CRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.severity.ERROR">
+<code class="sig-name descname">ERROR</code><em class="property"> = 2</em><a class="headerlink" href="#common.monitor.severity.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.severity.INFO">
+<code class="sig-name descname">INFO</code><em class="property"> = 0</em><a class="headerlink" href="#common.monitor.severity.INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.severity.WARNING">
+<code class="sig-name descname">WARNING</code><em class="property"> = 1</em><a class="headerlink" href="#common.monitor.severity.WARNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="common.monitor.w_events">
+<em class="property">class </em><code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">w_events</code><a class="reference internal" href="_modules/common/monitor.html#w_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.w_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Event types for monitoring the webgui activity.</p>
+<dl class="attribute">
+<dt id="common.monitor.w_events.LOGIN">
+<code class="sig-name descname">LOGIN</code><em class="property"> = 'LOGIN'</em><a class="headerlink" href="#common.monitor.w_events.LOGIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.LOGIN_FAIL">
+<code class="sig-name descname">LOGIN_FAIL</code><em class="property"> = 'LOGIN_FAIL'</em><a class="headerlink" href="#common.monitor.w_events.LOGIN_FAIL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.LOGOUT">
+<code class="sig-name descname">LOGOUT</code><em class="property"> = 'LOGOUT'</em><a class="headerlink" href="#common.monitor.w_events.LOGOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.RULE_CREATE">
+<code class="sig-name descname">RULE_CREATE</code><em class="property"> = 'RULE_CREATE'</em><a class="headerlink" href="#common.monitor.w_events.RULE_CREATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.RULE_DELETE">
+<code class="sig-name descname">RULE_DELETE</code><em class="property"> = 'RULE_DELETE'</em><a class="headerlink" href="#common.monitor.w_events.RULE_DELETE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.RULE_EDIT">
+<code class="sig-name descname">RULE_EDIT</code><em class="property"> = 'RULE_EDIT'</em><a class="headerlink" href="#common.monitor.w_events.RULE_EDIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.SERVICE_CONTROL">
+<code class="sig-name descname">SERVICE_CONTROL</code><em class="property"> = 'SERVICE_CONTROL'</em><a class="headerlink" href="#common.monitor.w_events.SERVICE_CONTROL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.TARGET_CREATE">
+<code class="sig-name descname">TARGET_CREATE</code><em class="property"> = 'TARGET_CREATE'</em><a class="headerlink" href="#common.monitor.w_events.TARGET_CREATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.TARGET_DELETE">
+<code class="sig-name descname">TARGET_DELETE</code><em class="property"> = 'TARGET_DELETE'</em><a class="headerlink" href="#common.monitor.w_events.TARGET_DELETE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.TARGET_EDIT">
+<code class="sig-name descname">TARGET_EDIT</code><em class="property"> = 'TARGET_EDIT'</em><a class="headerlink" href="#common.monitor.w_events.TARGET_EDIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.UKNOWN">
+<code class="sig-name descname">UKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.w_events.UKNOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.USER_CREATE">
+<code class="sig-name descname">USER_CREATE</code><em class="property"> = 'USER_CREATE'</em><a class="headerlink" href="#common.monitor.w_events.USER_CREATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.USER_DELETE">
+<code class="sig-name descname">USER_DELETE</code><em class="property"> = 'USER_DELETE'</em><a class="headerlink" href="#common.monitor.w_events.USER_DELETE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.w_events.USER_EDIT">
+<code class="sig-name descname">USER_EDIT</code><em class="property"> = 'USER_EDIT'</em><a class="headerlink" href="#common.monitor.w_events.USER_EDIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-common" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dispatch.html" class="btn btn-neutral float-right" title="dispatch package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cleaner.html" class="btn btn-neutral float-left" title="cleaner module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

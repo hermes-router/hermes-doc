@@ -1,0 +1,1086 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>webgui &mdash; Hermes 0.1a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/hermes_logo_w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/hermes-router/hermes">github.com/hermes-router/hermes</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">What is Hermes?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../monitoring.html">Monitoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Code Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Hermes</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>webgui</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for webgui</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">uvicorn</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">distro</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">daiquiri</span>
+
+<span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="k">import</span> <span class="n">Starlette</span>
+<span class="kn">from</span> <span class="nn">starlette.staticfiles</span> <span class="k">import</span> <span class="n">StaticFiles</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="k">import</span> <span class="n">HTMLResponse</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="k">import</span> <span class="n">PlainTextResponse</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="k">import</span> <span class="n">JSONResponse</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="k">import</span> <span class="n">RedirectResponse</span>
+<span class="kn">from</span> <span class="nn">starlette.templating</span> <span class="k">import</span> <span class="n">Jinja2Templates</span>
+<span class="kn">from</span> <span class="nn">starlette.authentication</span> <span class="k">import</span> <span class="n">requires</span>
+<span class="kn">from</span> <span class="nn">starlette.authentication</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">AuthenticationBackend</span><span class="p">,</span> <span class="n">AuthenticationError</span><span class="p">,</span> <span class="n">SimpleUser</span><span class="p">,</span> 
+    <span class="n">UnauthenticatedUser</span><span class="p">,</span> <span class="n">AuthCredentials</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">starlette.middleware.authentication</span> <span class="k">import</span> <span class="n">AuthenticationMiddleware</span>
+<span class="kn">from</span> <span class="nn">starlette.middleware.sessions</span> <span class="k">import</span> <span class="n">SessionMiddleware</span>
+<span class="kn">from</span> <span class="nn">starlette.config</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">starlette.datastructures</span> <span class="k">import</span> <span class="n">URL</span><span class="p">,</span> <span class="n">Secret</span>
+<span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="k">import</span> <span class="n">Route</span><span class="p">,</span> <span class="n">Router</span>
+
+<span class="c1"># App-specific includes</span>
+<span class="kn">import</span> <span class="nn">common.helper</span> <span class="k">as</span> <span class="nn">helper</span>
+<span class="kn">import</span> <span class="nn">common.config</span> <span class="k">as</span> <span class="nn">config</span>
+<span class="kn">import</span> <span class="nn">common.monitor</span> <span class="k">as</span> <span class="nn">monitor</span>
+<span class="kn">import</span> <span class="nn">common.rule_evaluation</span> <span class="k">as</span> <span class="nn">rule_evaluation</span>
+<span class="kn">import</span> <span class="nn">webinterface.users</span> <span class="k">as</span> <span class="nn">users</span>
+<span class="kn">import</span> <span class="nn">webinterface.tagslist</span> <span class="k">as</span> <span class="nn">tagslist</span>
+<span class="kn">import</span> <span class="nn">webinterface.services</span> <span class="k">as</span> <span class="nn">services</span>
+
+
+<span class="n">hermes_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Helper classes</span>
+<span class="c1">###################################################################################</span>
+
+<span class="n">daiquiri</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">(</span>
+        <span class="n">daiquiri</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span>
+            <span class="n">formatter</span><span class="o">=</span><span class="n">daiquiri</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">ColorFormatter</span><span class="p">(</span>
+                <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(color)s%(levelname)-8.8s</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot;</span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s%(color_stop)s</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">daiquiri</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;router&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ExtendedUser"><a class="viewcode-back" href="../webgui.html#webgui.ExtendedUser">[docs]</a><span class="k">class</span> <span class="nc">ExtendedUser</span><span class="p">(</span><span class="n">SimpleUser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_admin</span><span class="p">:</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">admin_status</span> <span class="o">=</span> <span class="n">is_admin</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_admin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">admin_status</span></div>
+
+
+<div class="viewcode-block" id="SessionAuthBackend"><a class="viewcode-back" href="../webgui.html#webgui.SessionAuthBackend">[docs]</a><span class="k">class</span> <span class="nc">SessionAuthBackend</span><span class="p">(</span><span class="n">AuthenticationBackend</span><span class="p">):</span>
+<div class="viewcode-block" id="SessionAuthBackend.authenticate"><a class="viewcode-back" href="../webgui.html#webgui.SessionAuthBackend.authenticate">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+
+        <span class="n">username</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">credentials</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;authenticated&quot;</span><span class="p">]</span>
+        <span class="n">is_admin</span><span class="o">=</span><span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_admin&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">)</span><span class="o">==</span><span class="s2">&quot;Jawohl&quot;</span><span class="p">:</span>
+            <span class="n">credentials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span>
+            <span class="n">is_admin</span><span class="o">=</span><span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">AuthCredentials</span><span class="p">(</span><span class="n">credentials</span><span class="p">),</span> <span class="n">ExtendedUser</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">is_admin</span><span class="p">)</span></div></div>
+
+
+<span class="n">webgui_config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="s2">&quot;configuration/webgui.env&quot;</span><span class="p">)</span>
+<span class="c1"># Note: PutSomethingRandomHere is the default value in the shipped configuration file.</span>
+<span class="c1">#       The app will not start with this value, forcing the users to set their onw secret </span>
+<span class="c1">#       key. Therefore, the value is used as default here as well.</span>
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">webgui_config</span><span class="p">(</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="n">Secret</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;PutSomethingRandomHere&quot;</span><span class="p">)</span>
+<span class="n">WEBGUI_PORT</span> <span class="o">=</span> <span class="n">webgui_config</span><span class="p">(</span><span class="s1">&#39;PORT&#39;</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+<span class="n">WEBGUI_HOST</span> <span class="o">=</span> <span class="n">webgui_config</span><span class="p">(</span><span class="s1">&#39;HOST&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">)</span>
+<span class="n">templates</span> <span class="o">=</span> <span class="n">Jinja2Templates</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="s1">&#39;webinterface/templates&#39;</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Don&#39;t check the existence of the static folder because the wrong parent folder is used if the </span>
+<span class="c1"># source code is parsed by sphinx. This would raise an exception and lead to failure of sphix.</span>
+<span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">&#39;/static&#39;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="s1">&#39;webinterface/statics&#39;</span><span class="p">,</span> <span class="n">check_dir</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;static&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">AuthenticationMiddleware</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">SessionAuthBackend</span><span class="p">())</span>
+<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">SessionMiddleware</span><span class="p">,</span> <span class="n">secret_key</span><span class="o">=</span><span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">session_cookie</span><span class="o">=</span><span class="s2">&quot;hermes_session&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_user_information"><a class="viewcode-back" href="../webgui.html#webgui.get_user_information">[docs]</a><span class="k">def</span> <span class="nf">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns dictionary of values that should always be passed to the templates when the user is logged in.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s2">&quot;logged_in&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="s2">&quot;is_admin&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_admin</span> <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="async_run"><a class="viewcode-back" href="../webgui.html#webgui.async_run">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">async_run</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Executes the given command in a way compatible with ayncio.&quot;&quot;&quot;</span>
+    <span class="n">proc</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_shell</span><span class="p">(</span>
+        <span class="n">cmd</span><span class="p">,</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+
+    <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="k">await</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span><span class="n">stdout</span><span class="p">,</span><span class="n">stderr</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Logs endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="show_first_log"><a class="viewcode-back" href="../webgui.html#webgui.show_first_log">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logs&#39;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">show_first_log</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the first service entry and forward to corresponding log entry point.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">):</span>
+        <span class="n">first_service</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/logs/&#39;</span><span class="o">+</span><span class="n">first_service</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>  
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;No services configured&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_log"><a class="viewcode-back" href="../webgui.html#webgui.show_log">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logs/</span><span class="si">{service}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">show_log</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Render the log for the given service. The time range can be specified via URL parameters.&quot;&quot;&quot;</span>
+    <span class="n">requested_service</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;service&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Get optional start and end dates from the URL. Make sure </span>
+    <span class="c1"># that the date format is clean</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">start_date</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from_time&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">start_date_cmd</span><span class="o">=</span><span class="s1">&#39; --since &quot;&#39;</span><span class="o">+</span><span class="n">start_date</span>
+        <span class="k">if</span> <span class="n">start_date</span> <span class="ow">and</span> <span class="n">start_time</span><span class="p">:</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="s1">&#39;%H:%M&#39;</span><span class="p">)</span>
+            <span class="n">start_date_cmd</span> <span class="o">=</span> <span class="n">start_date_cmd</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">start_time</span>
+        <span class="n">start_date_cmd</span><span class="o">=</span><span class="n">start_date_cmd</span><span class="o">+</span><span class="s1">&#39;&quot;&#39;</span>
+    <span class="k">except</span><span class="p">:</span> 
+        <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">start_date_cmd</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">end_date</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to_time&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>        
+        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">end_date_cmd</span><span class="o">=</span><span class="s1">&#39; --until &quot;&#39;</span><span class="o">+</span><span class="n">end_date</span>
+        <span class="k">if</span> <span class="n">end_date</span> <span class="ow">and</span> <span class="n">end_time</span><span class="p">:</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_time</span><span class="p">,</span> <span class="s1">&#39;%H:%M&#39;</span><span class="p">)</span>
+            <span class="n">end_date_cmd</span> <span class="o">=</span> <span class="n">end_date_cmd</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">end_time</span>
+        <span class="n">end_date_cmd</span><span class="o">=</span><span class="n">end_date_cmd</span><span class="o">+</span><span class="s1">&#39;&quot;&#39;</span>
+    <span class="k">except</span><span class="p">:</span> 
+        <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="n">end_date_cmd</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+    <span class="n">service_logs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">:</span>
+        <span class="n">service_logs</span><span class="p">[</span><span class="n">service</span><span class="p">]</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">service</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">service</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="s2">&quot;systemd&quot;</span><span class="p">:</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">service</span><span class="p">][</span><span class="s2">&quot;systemd_service&quot;</span><span class="p">]</span> <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">requested_service</span> <span class="ow">in</span> <span class="n">service_logs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">requested_service</span><span class="p">][</span><span class="s2">&quot;systemd_service&quot;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Service does not exist or is incorrectly configured.&#39;</span><span class="p">)</span>
+
+    <span class="n">run_result</span><span class="o">=</span><span class="k">await</span> <span class="n">async_run</span><span class="p">(</span><span class="s1">&#39;journalctl -n 1000 -u &#39;</span> <span class="o">+</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">requested_service</span><span class="p">][</span><span class="s2">&quot;systemd_service&quot;</span><span class="p">]</span>
+                               <span class="o">+</span> <span class="n">start_date_cmd</span> <span class="o">+</span> <span class="n">end_date_cmd</span><span class="p">)</span>
+
+    <span class="n">log_content</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">run_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">log_content</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">run_result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="n">line_list</span><span class="o">=</span><span class="n">log_content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_list</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">line_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">del</span> <span class="n">line_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">log_content</span><span class="o">=</span><span class="s1">&#39;&lt;br&gt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line_list</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log_content</span><span class="o">=</span><span class="s2">&quot;Error reading log information.&quot;</span>
+        <span class="k">if</span> <span class="n">start_date</span> <span class="ow">or</span> <span class="n">end_date</span><span class="p">:</span>
+            <span class="n">log_content</span><span class="o">=</span><span class="n">log_content</span><span class="o">+</span><span class="s2">&quot;&lt;br /&gt;&lt;br /&gt;Are the From/To settings valid?&quot;</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;logs.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;logs&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;service_logs&quot;</span><span class="p">:</span> <span class="n">service_logs</span><span class="p">,</span> <span class="s2">&quot;log_id&quot;</span><span class="p">:</span> <span class="n">requested_service</span><span class="p">,</span> <span class="s2">&quot;log_content&quot;</span><span class="p">:</span> <span class="n">log_content</span><span class="p">,</span>
+               <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="n">start_date</span><span class="p">,</span> <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="n">end_date</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span> <span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Rules endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="show_rules"><a class="viewcode-back" href="../webgui.html#webgui.show_rules">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rules&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">show_rules</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Show all defined routing rules. Can be executed by all logged-in users.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;rules.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="s2">&quot;rules&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">]}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_rule"><a class="viewcode-back" href="../webgui.html#webgui.add_rule">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rules&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_rule</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a new routing rule and forwards the user to the rule edit page.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+    
+    <span class="n">newrule</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">newrule</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Rule already exists.&#39;</span><span class="p">)</span>
+    
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">newrule</span><span class="p">]</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="s2">&quot;False&quot;</span> <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write configuration. Try again.&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Created rule </span><span class="si">{newrule}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">RULE_CREATE</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">newrule</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/rules/edit/&#39;</span><span class="o">+</span><span class="n">newrule</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>  </div>
+
+
+<div class="viewcode-block" id="rules_edit"><a class="viewcode-back" href="../webgui.html#webgui.rules_edit">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rules/edit/</span><span class="si">{rule}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">rules_edit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows the edit page for the given routing rule.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">rule</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;rule&quot;</span><span class="p">]</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;rules_edit.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;rules&quot;</span><span class="p">,</span> <span class="s2">&quot;rules&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">],</span> 
+               <span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">],</span> <span class="s2">&quot;rule&quot;</span><span class="p">:</span> <span class="n">rule</span><span class="p">,</span> 
+               <span class="s2">&quot;alltags&quot;</span><span class="p">:</span> <span class="n">tagslist</span><span class="o">.</span><span class="n">alltags</span><span class="p">,</span> <span class="s2">&quot;sortedtags&quot;</span><span class="p">:</span> <span class="n">tagslist</span><span class="o">.</span><span class="n">sortedtags</span><span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>    </div>
+
+
+<div class="viewcode-block" id="rules_edit_post"><a class="viewcode-back" href="../webgui.html#webgui.rules_edit_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rules/edit/</span><span class="si">{rule}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">rules_edit_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the settings for the given routing rule.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">editrule</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;rule&quot;</span><span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">editrule</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Rule does not exist anymore.&#39;</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">editrule</span><span class="p">][</span><span class="s2">&quot;rule&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;rule&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">editrule</span><span class="p">][</span><span class="s2">&quot;target&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">editrule</span><span class="p">][</span><span class="s2">&quot;disabled&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;disabled&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">editrule</span><span class="p">][</span><span class="s2">&quot;contact&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;contact&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">editrule</span><span class="p">][</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write configuration. Try again.&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Edited rule </span><span class="si">{editrule}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">RULE_EDIT</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">editrule</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/rules&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   </div>
+
+
+<div class="viewcode-block" id="rules_delete_post"><a class="viewcode-back" href="../webgui.html#webgui.rules_delete_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rules/delete/</span><span class="si">{rule}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">rules_delete_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Deletes the given routing rule&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+    
+    <span class="n">deleterule</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;rule&quot;</span><span class="p">]</span>    
+   
+    <span class="k">if</span> <span class="n">deleterule</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">]:</span>
+        <span class="k">del</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">deleterule</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write configuration. Try again.&#39;</span><span class="p">)</span>
+    
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Deleted rule </span><span class="si">{deleterule}</span><span class="s1">&#39;</span><span class="p">)</span>    
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">RULE_DELETE</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">deleterule</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/rules&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   </div>
+
+
+<div class="viewcode-block" id="rules_test"><a class="viewcode-back" href="../webgui.html#webgui.rules_test">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/rules/test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">rules_test</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evalutes if a given routing rule is valid. The rule and testing dictionary have to be passed as form parameters.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+        <span class="n">testrule</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;rule&quot;</span><span class="p">]</span>
+        <span class="n">testvalues</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;testvalues&quot;</span><span class="p">])</span>
+    <span class="k">except</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;&lt;span class=&quot;tag is-warning is-medium ruleresult&quot;&gt;&lt;i class=&quot;fas fa-bug&quot;&gt;&lt;/i&gt;&amp;nbsp;Error&lt;/span&gt;&amp;nbsp;&amp;nbsp;Invalid test values&#39;</span><span class="p">)</span>
+    
+    <span class="n">result</span><span class="o">=</span><span class="n">rule_evaluation</span><span class="o">.</span><span class="n">test_rule</span><span class="p">(</span><span class="n">testrule</span><span class="p">,</span><span class="n">testvalues</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="o">==</span><span class="s2">&quot;True&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;&lt;span class=&quot;tag is-success is-medium ruleresult&quot;&gt;&lt;i class=&quot;fas fa-thumbs-up&quot;&gt;&lt;/i&gt;&amp;nbsp;Route&lt;/span&gt;&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="o">==</span><span class="s2">&quot;False&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;&lt;span class=&quot;tag is-info is-medium ruleresult&quot;&gt;&lt;i class=&quot;fas fa-thumbs-down&quot;&gt;&lt;/i&gt;&amp;nbsp;Discard&lt;/span&gt;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;&lt;span class=&quot;tag is-danger is-medium ruleresult&quot;&gt;&lt;i class=&quot;fas fa-bug&quot;&gt;&lt;/i&gt;&amp;nbsp;Error&lt;/span&gt;&amp;nbsp;&amp;nbsp;Invalid rule: &#39;</span><span class="o">+</span><span class="n">result</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Targets endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="show_targets"><a class="viewcode-back" href="../webgui.html#webgui.show_targets">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/targets&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">show_targets</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows all configured targets.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">used_targets</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">]:</span>
+        <span class="n">used_target</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;rules&quot;</span><span class="p">][</span><span class="n">rule</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">,</span><span class="s2">&quot;NONE&quot;</span><span class="p">)</span>
+        <span class="n">used_targets</span><span class="p">[</span><span class="n">used_target</span><span class="p">]</span><span class="o">=</span><span class="n">rule</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;targets.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;targets&quot;</span><span class="p">,</span> <span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">],</span> <span class="s2">&quot;used_targets&quot;</span><span class="p">:</span> <span class="n">used_targets</span><span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_target"><a class="viewcode-back" href="../webgui.html#webgui.add_target">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/targets&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_target</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a new target.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+    
+    <span class="n">newtarget</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">newtarget</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Target already exists.&#39;</span><span class="p">)</span>
+    
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">newtarget</span><span class="p">]</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;ip&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span> <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write configuration. Try again.&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Created target </span><span class="si">{newtarget}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">TARGET_CREATE</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">newtarget</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/targets/edit/&#39;</span><span class="o">+</span><span class="n">newtarget</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>  </div>
+
+
+<div class="viewcode-block" id="targets_edit"><a class="viewcode-back" href="../webgui.html#webgui.targets_edit">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/targets/edit/</span><span class="si">{target}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">targets_edit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows the edit page for the given target.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">edittarget</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">edittarget</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/targets&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span> 
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;targets_edit.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;targets&quot;</span><span class="p">,</span> <span class="s2">&quot;targets&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">],</span> <span class="s2">&quot;edittarget&quot;</span><span class="p">:</span> <span class="n">edittarget</span><span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>    </div>
+
+
+<div class="viewcode-block" id="targes_edit_post"><a class="viewcode-back" href="../webgui.html#webgui.targes_edit_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/targets/edit/</span><span class="si">{target}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">targes_edit_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the given target using the form values posted with the request.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">edittarget</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">edittarget</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Target does not exist anymore.&#39;</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">edittarget</span><span class="p">][</span><span class="s2">&quot;ip&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;ip&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">edittarget</span><span class="p">][</span><span class="s2">&quot;port&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">edittarget</span><span class="p">][</span><span class="s2">&quot;aet_target&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;aet_target&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">edittarget</span><span class="p">][</span><span class="s2">&quot;aet_source&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;aet_source&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">edittarget</span><span class="p">][</span><span class="s2">&quot;contact&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;contact&quot;</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write configuration. Try again.&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Edited target </span><span class="si">{edittarget}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">TARGET_EDIT</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">edittarget</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/targets&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   </div>
+
+
+<div class="viewcode-block" id="targets_delete_post"><a class="viewcode-back" href="../webgui.html#webgui.targets_delete_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/targets/delete/</span><span class="si">{target}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">targets_delete_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Deletes the given target.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+    
+    <span class="n">deletetarget</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">deletetarget</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">]:</span>
+        <span class="k">del</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">deletetarget</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write configuration. Try again.&#39;</span><span class="p">)</span>    
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Deleted target </span><span class="si">{deletetarget}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">TARGET_DELETE</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">deletetarget</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/targets&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   </div>
+
+
+<div class="viewcode-block" id="targets_test_post"><a class="viewcode-back" href="../webgui.html#webgui.targets_test_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/targets/test/</span><span class="si">{target}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">targets_test_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tests the connectivity of the given target by executing ping and c-echo requests.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">testtarget</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span>
+    
+    <span class="n">ping_response</span><span class="o">=</span><span class="s2">&quot;False&quot;</span>
+    <span class="n">cecho_response</span><span class="o">=</span><span class="s2">&quot;False&quot;</span>
+    <span class="n">target_ip</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+    <span class="n">target_port</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">target_ip</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">testtarget</span><span class="p">][</span><span class="s2">&quot;ip&quot;</span><span class="p">]</span>
+        <span class="n">target_port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;targets&quot;</span><span class="p">][</span><span class="n">testtarget</span><span class="p">][</span><span class="s2">&quot;port&quot;</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Testing target </span><span class="si">{testtarget}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">target_ip</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">target_port</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">await</span> <span class="n">async_run</span><span class="p">(</span><span class="s2">&quot;ping -w 1 -c 1 &quot;</span> <span class="o">+</span> <span class="n">target_ip</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">ping_response</span><span class="o">=</span><span class="s2">&quot;True&quot;</span>
+            <span class="c1"># Only test for c-echo if the ping was successful</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">await</span> <span class="n">async_run</span><span class="p">(</span><span class="s2">&quot;echoscu -to 10 &quot;</span> <span class="o">+</span> <span class="n">target_ip</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">target_port</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">cecho_response</span><span class="o">=</span><span class="s2">&quot;True&quot;</span>
+    
+    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="s1">&#39;{&quot;ping&quot;: &quot;&#39;</span><span class="o">+</span><span class="n">ping_response</span><span class="o">+</span><span class="s1">&#39;&quot;, &quot;c-echo&quot;: &quot;&#39;</span><span class="o">+</span><span class="n">cecho_response</span><span class="o">+</span><span class="s1">&#39;&quot; }&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Users endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="show_users"><a class="viewcode-back" href="../webgui.html#webgui.show_users">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">show_users</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows all available users.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;users.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span> <span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>    </div>
+
+
+<div class="viewcode-block" id="add_new_user"><a class="viewcode-back" href="../webgui.html#webgui.add_new_user">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_new_user</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a new user and redirects to the user-edit page.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+    
+    <span class="n">newuser</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">newuser</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;User already exists.&#39;</span><span class="p">)</span>
+    
+    <span class="n">newpassword</span><span class="o">=</span><span class="n">users</span><span class="o">.</span><span class="n">hash_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span><span class="s2">&quot;here_should_be_a_password&quot;</span><span class="p">))</span>
+    <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">newuser</span><span class="p">]</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">newpassword</span><span class="p">,</span> <span class="s2">&quot;is_admin&quot;</span><span class="p">:</span> <span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="s2">&quot;change_password&quot;</span><span class="p">:</span> <span class="s2">&quot;True&quot;</span> <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">save_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write user list. Try again.&#39;</span><span class="p">)</span>    
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Created user </span><span class="si">{newuser}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">USER_CREATE</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">newuser</span><span class="p">)</span>    
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/users/edit/&#39;</span><span class="o">+</span><span class="n">newuser</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>  </div>
+
+
+<div class="viewcode-block" id="users_edit"><a class="viewcode-back" href="../webgui.html#webgui.users_edit">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users/edit/</span><span class="si">{user}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">users_edit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows the settings for a given user.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">edituser</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">edituser</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span> 
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;users_edit.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;users&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;edituser&quot;</span><span class="p">:</span> <span class="n">edituser</span><span class="p">,</span> <span class="s2">&quot;edituser_info&quot;</span><span class="p">:</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">edituser</span><span class="p">]}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>    </div>
+
+
+<div class="viewcode-block" id="settings_edit"><a class="viewcode-back" href="../webgui.html#webgui.settings_edit">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/settings&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">settings_edit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows the settings for the current user. Renders the same template as the normal user edit, but with parameter own_settings=True.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">own_name</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;users_edit.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;settings&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;edituser&quot;</span><span class="p">:</span> <span class="n">own_name</span><span class="p">,</span> <span class="s2">&quot;edituser_info&quot;</span><span class="p">:</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">own_name</span><span class="p">],</span> <span class="s2">&quot;own_settings&quot;</span><span class="p">:</span> <span class="s2">&quot;True&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;change_password&quot;</span><span class="p">:</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">own_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;change_password&quot;</span><span class="p">,</span><span class="s2">&quot;False&quot;</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>    </div>
+
+
+<div class="viewcode-block" id="users_edit_post"><a class="viewcode-back" href="../webgui.html#webgui.users_edit_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users/edit/</span><span class="si">{user}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">users_edit_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the given user with settings passed as form parameters.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">edituser</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">edituser</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;User does not exist anymore.&#39;</span><span class="p">)</span>
+
+    <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">edituser</span><span class="p">][</span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">form</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]:</span>
+        <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">edituser</span><span class="p">][</span><span class="s2">&quot;password&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">users</span><span class="o">.</span><span class="n">hash_password</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">])</span>
+        <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">edituser</span><span class="p">][</span><span class="s2">&quot;change_password&quot;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;False&quot;</span>
+ 
+    <span class="c1"># Only admins are allowed to change the admin status, and the current user</span>
+    <span class="c1"># cannot change the status for himself (which includes the settings page)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_admin</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span> <span class="o">!=</span> <span class="n">edituser</span><span class="p">):</span>
+        <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">edituser</span><span class="p">][</span><span class="s2">&quot;is_admin&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;is_admin&quot;</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">save_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write user list. Try again.&#39;</span><span class="p">)</span>    
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Edited user </span><span class="si">{edituser}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">USER_EDIT</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">edituser</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;own_settings&quot;</span> <span class="ow">in</span> <span class="n">form</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   </div>
+
+
+<div class="viewcode-block" id="users_delete_post"><a class="viewcode-back" href="../webgui.html#webgui.users_delete_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users/delete/</span><span class="si">{user}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">users_delete_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Deletes the given users.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+    
+    <span class="n">deleteuser</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path_params</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">deleteuser</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">users</span><span class="o">.</span><span class="n">users_list</span><span class="p">[</span><span class="n">deleteuser</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">save_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;ERROR: Unable to write user list. Try again.&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Deleted user </span><span class="si">{deleteuser}</span><span class="s1">&#39;</span><span class="p">)</span>        
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">USER_DELETE</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">deleteuser</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/users&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>   </div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Configuration endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="configuration"><a class="viewcode-back" href="../webgui.html#webgui.configuration">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/configuration&#39;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">configuration</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows the current configuration of the hermes appliance.&quot;&quot;&quot;</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;configuration.html&quot;</span>
+    <span class="n">os_info</span><span class="o">=</span><span class="n">distro</span><span class="o">.</span><span class="n">linux_distribution</span><span class="p">()</span>
+    <span class="n">os_string</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{os_info[0]}</span><span class="s2"> Version </span><span class="si">{os_info[1]}</span><span class="s2"> (</span><span class="si">{os_info[2]}</span><span class="s2">)&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">,</span> <span class="s2">&quot;os_string&quot;</span><span class="p">:</span> <span class="n">os_string</span><span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Login/logout endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="login"><a class="viewcode-back" href="../webgui.html#webgui.login">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows the login page.&quot;&quot;&quot;</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;login.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="login_post"><a class="viewcode-back" href="../webgui.html#webgui.login_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">login_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate the submitted login information. Redirects to index page if login information valid, otherwise back to login. </span>
+<span class="sd">       On the first login, the user will be directed to the settings page and asked to change the password.&quot;&quot;&quot;</span>    
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">users</span><span class="o">.</span><span class="n">evaluate_password</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)):</span>        
+        <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]})</span>
+
+        <span class="k">if</span> <span class="n">users</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">])</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;is_admin&quot;</span><span class="p">:</span> <span class="s2">&quot;Jawohl&quot;</span><span class="p">})</span>
+
+        <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">LOGIN</span><span class="p">,</span> <span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span> <span class="s2">&quot;</span><span class="si">{admin}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">admin</span><span class="o">=</span><span class="s2">&quot;ADMIN&quot;</span> <span class="k">if</span> <span class="n">users</span><span class="o">.</span><span class="n">is_admin</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">])</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">users</span><span class="o">.</span><span class="n">needs_change_password</span><span class="p">(</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/settings&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>        
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">source_ip</span><span class="o">=</span><span class="s2">&quot;UNKOWN IP&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">source_ip</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">host</span>
+        <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">LOGIN_FAIL</span><span class="p">,</span> <span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span> <span class="n">source_ip</span><span class="p">)</span>
+
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;login.html&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;invalid_password&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
+        <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logout"><a class="viewcode-back" href="../webgui.html#webgui.logout">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Logouts the users by clearing the session cookie.&quot;&quot;&quot;</span>    
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">LOGOUT</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/login&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Homepage endpoints</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="homepage"><a class="viewcode-back" href="../webgui.html#webgui.homepage">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">homepage</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Renders the index page that shows information about the system status.&quot;&quot;&quot;</span>
+    <span class="n">used_space</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">free_space</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">total_space</span><span class="o">=</span><span class="mi">0</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">disk_total</span><span class="p">,</span> <span class="n">disk_used</span><span class="p">,</span> <span class="n">disk_free</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;incoming_folder&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">disk_total</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+            <span class="n">disk_total</span><span class="o">=</span><span class="mi">1</span>
+
+        <span class="n">used_space</span><span class="o">=</span><span class="mi">100</span><span class="o">*</span><span class="n">disk_used</span><span class="o">/</span><span class="n">disk_total</span>
+        <span class="n">free_space</span><span class="o">=</span><span class="p">(</span><span class="n">disk_free</span> <span class="o">//</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">))</span>
+        <span class="n">total_space</span><span class="o">=</span><span class="p">(</span><span class="n">disk_total</span> <span class="o">//</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">used_space</span><span class="o">=-</span><span class="mi">1</span>
+        <span class="n">free_space</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span>
+        <span class="n">disk_total</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span>
+
+    <span class="n">service_status</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">:</span>
+        <span class="n">running_status</span><span class="o">=</span><span class="s2">&quot;False&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">service</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;systemd_service&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">await</span> <span class="n">async_run</span><span class="p">(</span><span class="s2">&quot;systemctl is-active &quot;</span> <span class="o">+</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">service</span><span class="p">][</span><span class="s2">&quot;systemd_service&quot;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">running_status</span><span class="o">=</span><span class="s2">&quot;True&quot;</span>
+        
+        <span class="n">service_status</span><span class="p">[</span><span class="n">service</span><span class="p">]</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">service</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">service</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="s2">&quot;running&quot;</span><span class="p">:</span> <span class="n">running_status</span> <span class="p">}</span>
+        
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;index.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;homepage&quot;</span><span class="p">,</span> 
+               <span class="s2">&quot;used_space&quot;</span><span class="p">:</span> <span class="n">used_space</span><span class="p">,</span> <span class="s2">&quot;free_space&quot;</span><span class="p">:</span> <span class="n">free_space</span><span class="p">,</span> <span class="s2">&quot;total_space&quot;</span><span class="p">:</span> <span class="n">total_space</span><span class="p">,</span>
+               <span class="s2">&quot;service_status&quot;</span><span class="p">:</span> <span class="n">service_status</span> <span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="control_services"><a class="viewcode-back" href="../webgui.html#webgui.control_services">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/services/control&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">control_services</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+    <span class="n">action</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;action&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;start&#39;</span><span class="p">:</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;start&#39;</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;action&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;stop&#39;</span><span class="p">:</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;stop&#39;</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;action&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;restart&#39;</span><span class="p">:</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;restart&#39;</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;action&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;kill&#39;</span><span class="p">:</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;kill&#39;</span>
+
+    <span class="n">controlservices</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;services&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">action</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">controlservices</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="n">controlservices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">service</span><span class="p">)</span> <span class="ow">in</span> <span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">:</span>
+                <span class="k">continue</span>                            
+            <span class="n">command</span><span class="o">=</span><span class="s2">&quot;systemctl &quot;</span><span class="o">+</span><span class="n">action</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">services</span><span class="o">.</span><span class="n">services_list</span><span class="p">[</span><span class="n">service</span><span class="p">][</span><span class="s2">&quot;systemd_service&quot;</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Executing: </span><span class="si">{command}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">async_run</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="n">monitor_string</span><span class="o">=</span><span class="s2">&quot;action: &quot;</span><span class="o">+</span><span class="n">action</span><span class="o">+</span><span class="s2">&quot;; services: &quot;</span><span class="o">+</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;services&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">SERVICE_CONTROL</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">monitor_string</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="s2">&quot;{ }&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Error handlers</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="error"><a class="viewcode-back" href="../webgui.html#webgui.error">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/error&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An example error. Switch the `debug` setting to see either tracebacks or 500 pages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Oh no&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="not_found"><a class="viewcode-back" href="../webgui.html#webgui.not_found">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">not_found</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">exc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an HTTP 404 page.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;404.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="server_error"><a class="viewcode-back" href="../webgui.html#webgui.server_error">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">server_error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">exc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an HTTP 500 page.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;500.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">hermes_version</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Emergency error handler</span>
+<span class="c1">###################################################################################</span>
+
+<div class="viewcode-block" id="emergency_response"><a class="viewcode-back" href="../webgui.html#webgui.emergency_response">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">emergency_response</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows emergency message about invalid configuration.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Webgui configuration is invalid. Check configuration and restart service.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="launch_emergency_app"><a class="viewcode-back" href="../webgui.html#webgui.launch_emergency_app">[docs]</a><span class="k">def</span> <span class="nf">launch_emergency_app</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Launches a minimal application to inform the user about the incorrect configuration&quot;&quot;&quot;</span>
+    <span class="n">emergency_app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">emergency_app</span> <span class="o">=</span> <span class="n">Router</span><span class="p">([</span>
+        <span class="n">Route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">emergency_response</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">]),</span>
+        <span class="n">Route</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">{any1}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">emergency_response</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">]),</span>
+        <span class="n">Route</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">{any1}</span><span class="s1">/</span><span class="si">{any2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">emergency_response</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">]),</span>
+        <span class="n">Route</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">{any1}</span><span class="s1">/</span><span class="si">{any2}</span><span class="s1">/</span><span class="si">{any3}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">emergency_response</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+    <span class="p">])</span>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">emergency_app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">WEBGUI_HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">WEBGUI_PORT</span><span class="p">)</span></div>
+
+
+<span class="c1">###################################################################################</span>
+<span class="c1">## Entry function</span>
+<span class="c1">###################################################################################</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">services</span><span class="o">.</span><span class="n">read_services</span><span class="p">()</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+        <span class="n">users</span><span class="o">.</span><span class="n">read_users</span><span class="p">()</span>        
+        <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">SECRET_KEY</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;PutSomethingRandomHere&#39;</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;You need to change the SECRET_KEY in configuration/webgui.env&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid or missing SECRET_KEY in webgui.env&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot start service. Showing emergency message.&quot;</span><span class="p">)</span>
+        <span class="n">launch_emergency_app</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Going down.&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;webgui&#39;</span><span class="p">,</span><span class="s1">&#39;main&#39;</span><span class="p">,</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s1">&#39;bookkeeper&#39;</span><span class="p">])</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">BOOT</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span><span class="n">f</span><span class="s1">&#39;PID = {os.getpid()}&#39;</span><span class="p">)</span>    
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tagslist</span><span class="o">.</span><span class="n">read_tagslist</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Unable to parse tag list. Rule evaluation will not be available.&quot;</span><span class="p">)</span>
+
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">WEBGUI_HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">WEBGUI_PORT</span><span class="p">)</span>
+
+    <span class="c1"># Process will exit here</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">SHUTDOWN</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

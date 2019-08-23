@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hermes DICOM Router &mdash; Hermes 0.1a documentation</title>
+  <title>dispatcher module &mdash; Hermes 0.1a documentation</title>
   
 
   
@@ -36,7 +36,8 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="What is Hermes?" href="intro.html" /> 
+    <link rel="next" title="router module" href="router.html" />
+    <link rel="prev" title="dispatch package" href="dispatch.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +51,7 @@
           
 
           
-            <a href="#">
+            <a href="index.html">
           
 
           
@@ -92,8 +93,20 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Code Documentation</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dispatcher module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dispatcher-py">dispatcher.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -108,7 +121,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Hermes</a>
+          <a href="index.html">Hermes</a>
         
       </nav>
 
@@ -137,9 +150,11 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Hermes DICOM Router</li>
+          <li><a href="modules.html">Code Documentation</a> &raquo;</li>
+        
+      <li>dispatcher module</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -156,42 +171,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="hermes-dicom-router">
-<h1>Hermes DICOM Router<a class="headerlink" href="#hermes-dicom-router" title="Permalink to this headline">¶</a></h1>
-<p>Hermes is a flexible open-source DICOM routing solution with a simple-to-use web interface and extensive monitoring options.</p>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-hermes">Installing Hermes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#create-data-storage">Create data storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-postgresql">Installing Postgresql</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-redash">Installing Redash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#adapting-configuration-files">Adapting configuration files</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Developer Information</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
-</ul>
-</li>
-</ul>
+  <div class="section" id="module-dispatcher">
+<span id="dispatcher-module"></span><h1>dispatcher module<a class="headerlink" href="#module-dispatcher" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dispatcher-py">
+<h2>dispatcher.py<a class="headerlink" href="#dispatcher-py" title="Permalink to this headline">¶</a></h2>
+<p>The dispatching module of the proxy.</p>
+<dl class="function">
+<dt id="dispatcher.dispatch">
+<code class="sig-prename descclassname">dispatcher.</code><code class="sig-name descname">dispatch</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatcher.html#dispatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.exit_dispatcher">
+<code class="sig-prename descclassname">dispatcher.</code><code class="sig-name descname">exit_dispatcher</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatcher.html#exit_dispatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.exit_dispatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the asyncio event loop.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.receiveSignal">
+<code class="sig-prename descclassname">dispatcher.</code><code class="sig-name descname">receiveSignal</code><span class="sig-paren">(</span><em class="sig-param">signalNumber</em>, <em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatcher.html#receiveSignal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.receiveSignal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.terminateProcess">
+<code class="sig-prename descclassname">dispatcher.</code><code class="sig-name descname">terminateProcess</code><span class="sig-paren">(</span><em class="sig-param">signalNumber</em>, <em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatcher.html#terminateProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.terminateProcess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -203,8 +208,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="intro.html" class="btn btn-neutral float-right" title="What is Hermes?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="router.html" class="btn btn-neutral float-right" title="router module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="dispatch.html" class="btn btn-neutral float-left" title="dispatch package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
