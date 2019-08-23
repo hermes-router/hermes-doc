@@ -175,6 +175,8 @@
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 
 <span class="kn">from</span> <span class="nn">common.helper</span> <span class="k">import</span> <span class="n">is_ready_for_sending</span>
+<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">send_series_event</span>
+<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">daiquiri</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;send&quot;</span><span class="p">)</span>
 
@@ -215,7 +217,7 @@
     <span class="n">command</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;&quot;&quot;dcmsend </span><span class="si">{target_ip}</span><span class="s2"> </span><span class="si">{target_port}</span><span class="s2"> +sd </span><span class="si">{folder}</span><span class="s2"></span>
 <span class="s2">            -aet </span><span class="si">{target_aet_source}</span><span class="s2"> -aec </span><span class="si">{target_aet_target}</span><span class="s2"> -nuc</span>
 <span class="s2">            +sp &#39;*.dcm&#39; -to 60 +crf </span><span class="si">{dcmsend_status_file}</span><span class="s2">&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">command</span>
+    <span class="k">return</span> <span class="n">command</span><span class="p">,</span> <span class="n">target</span>
 
 
 <div class="viewcode-block" id="execute"><a class="viewcode-back" href="../../dispatch.html#dispatch.send.execute">[docs]</a><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">success_folder</span><span class="p">,</span> <span class="n">error_folder</span><span class="p">):</span>
@@ -232,7 +234,7 @@
         <span class="c1"># still going on</span>
         <span class="n">lock_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span>
         <span class="n">lock_file</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="n">_create_command</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span>
+        <span class="n">command</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">_create_command</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Running command </span><span class="si">{command}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -241,6 +243,10 @@
             <span class="p">)</span>
             <span class="n">lock_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
             <span class="n">_move_sent_directory</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">source_folder</span><span class="p">)</span>
+            <span class="n">file_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.dcm&quot;</span><span class="p">)))</span>
+            <span class="n">send_series_event</span><span class="p">(</span>
+                <span class="n">s_event</span><span class="o">.</span><span class="n">DISPATCH</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;series_uid&quot;</span><span class="p">],</span> <span class="n">file_count</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_name&quot;</span><span class="p">],</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">lock_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
             <span class="n">dcmsend_error_message</span> <span class="o">=</span> <span class="n">DCMSEND_ERROR_CODES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -267,12 +273,6 @@
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source_folder</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">success_folder</span><span class="p">))</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">execute</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 
            </div>

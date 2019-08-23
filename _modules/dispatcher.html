@@ -209,15 +209,14 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unable to update configuration. Skipping processing.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unable to read configuration. Skipping processing.&quot;</span><span class="p">)</span>
         <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span>
             <span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span>
             <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
-            <span class="s2">&quot;Unable to update configuration (possibly locked)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Unable to read configuration (possibly locked)&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span>
 
-    <span class="c1">#logger.info(f&quot;Checking for outgoing data in {config.hermes[&#39;outgoing_folder&#39;]}&quot;)</span>
     <span class="n">success_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;success_folder&quot;</span><span class="p">])</span>
     <span class="n">error_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;error_folder&quot;</span><span class="p">])</span>
     <span class="k">with</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;outgoing_folder&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">it</span><span class="p">:</span>
@@ -229,7 +228,8 @@
             <span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Sending folder </span><span class="si">{entry.path}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">execute</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="p">),</span> <span class="n">success_folder</span><span class="p">,</span> <span class="n">error_folder</span><span class="p">)</span>
-            <span class="c1"># If termination is requested, stop processing series after the active one has been completed</span>
+            <span class="c1"># If termination is requested, stop processing series after the </span>
+            <span class="c1"># active one has been completed</span>
             <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
                 <span class="k">break</span></div>
 
@@ -274,8 +274,10 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Cannot start service. Going down.&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;dispatcher&#39;</span><span class="p">,</span><span class="n">instance_name</span><span class="p">,</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s1">&#39;bookkeeper&#39;</span><span class="p">])</span>
-    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">BOOT</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span><span class="n">f</span><span class="s1">&#39;PID = {os.getpid()}&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;dispatcher&quot;</span><span class="p">,</span> <span class="n">instance_name</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;bookkeeper&quot;</span><span class="p">])</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span>
+        <span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">BOOT</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;PID = {os.getpid()}&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">graphite_prefix</span> <span class="o">=</span> <span class="s2">&quot;hermes.dispatcher.&quot;</span> <span class="o">+</span> <span class="n">instance_name</span>
 
