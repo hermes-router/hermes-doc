@@ -249,8 +249,16 @@ while the worker function is running</p>
 <code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">is_ready_for_sending</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#is_ready_for_sending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.is_ready_for_sending" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a case in the outgoing folder is ready for sending by the dispatcher.</p>
 <p>No lock file (.lock) should be in sending folder and no error file (.error),
-if there is one  copy/move is not done yet. Also at least some dicom files
-should be there for sending.</p>
+if there is one copy/move is not done yet. Also at least some dicom files
+should be there for sending. Also checks for a target.json file and if it is
+valid.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.helper.is_target_json_valid">
+<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">is_target_json_valid</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#is_target_json_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.is_target_json_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the target.json file exists and is also valid. Mandatory
+keys are target_ip, target_port and target_aet_target.</p>
 </dd></dl>
 
 <dl class="function">
@@ -306,8 +314,8 @@ will not be transmitted to the bookkeeper.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="common.monitor.h_events.UKNOWN">
-<code class="sig-name descname">UKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.h_events.UKNOWN" title="Permalink to this definition">¶</a></dt>
+<dt id="common.monitor.h_events.UNKNOWN">
+<code class="sig-name descname">UNKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.h_events.UNKNOWN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -348,8 +356,8 @@ will not be transmitted to the bookkeeper.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="common.monitor.s_events.UKNOWN">
-<code class="sig-name descname">UKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.s_events.UKNOWN" title="Permalink to this definition">¶</a></dt>
+<dt id="common.monitor.s_events.UNKNOWN">
+<code class="sig-name descname">UNKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.s_events.UNKNOWN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -462,8 +470,8 @@ fully received and the DICOM tags have been parsed.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="common.monitor.w_events.UKNOWN">
-<code class="sig-name descname">UKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.w_events.UKNOWN" title="Permalink to this definition">¶</a></dt>
+<dt id="common.monitor.w_events.UNKNOWN">
+<code class="sig-name descname">UNKNOWN</code><em class="property"> = 'UNKNOWN'</em><a class="headerlink" href="#common.monitor.w_events.UNKNOWN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

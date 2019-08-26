@@ -156,18 +156,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for router</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
-<span class="n">hermes_router_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
-
-<span class="c1"># Standard python includes</span>
+<span></span><span class="c1"># Standard python includes</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">graphyte</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-
-<span class="c1"># 3rd party</span>
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 
 <span class="c1"># App-specific includes</span>
@@ -175,6 +170,21 @@
 <span class="kn">import</span> <span class="nn">common.config</span> <span class="k">as</span> <span class="nn">config</span>
 <span class="kn">import</span> <span class="nn">common.monitor</span> <span class="k">as</span> <span class="nn">monitor</span>
 <span class="kn">from</span> <span class="nn">routing.process_series</span> <span class="k">import</span> <span class="n">process_series</span>
+<span class="kn">from</span> <span class="nn">routing.process_series</span> <span class="k">import</span> <span class="n">process_error_files</span>
+
+
+<span class="n">hermes_router_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
+
+<span class="c1"># NOTES: Currently, the router only implements series-level rules, i.e. the proxy rules will be executed</span>
+<span class="c1">#        once the series is complete. In the future, also study-level rules can be implemented (i.e. a</span>
+<span class="c1">#        rule can be a series-level or study-level rule). Series-level rules are executed as done right now.</span>
+<span class="c1">#        If a study-level rule exists that applies to a series, the series will be moved to an /incoming-study</span>
+<span class="c1">#        folder and renamed with the studyUID as prefix. Once the study is complete (via a separate time</span>
+<span class="c1">#        tigger), the study-level rules will be applied by taking each rule and collecting the series of</span>
+<span class="c1">#        the studies that apply to the rule. Each study-level rule will create a separate outgoing folder</span>
+<span class="c1">#        so that all series that apply to the study-level rule are transferred together in one DICOM</span>
+<span class="c1">#        transfer (association). This might be necessary for certain PACS systems or workstations (e.g.</span>
+<span class="c1">#        when transferring 4D series).</span>
 
 <span class="n">daiquiri</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
@@ -189,19 +199,6 @@
 <span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">daiquiri</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;router&quot;</span><span class="p">)</span>
 
-
-<span class="c1"># NOTES: Currently, the router only implements series-level rules, i.e. the proxy rules will be executed</span>
-<span class="c1">#        once the series is complete. In the future, also study-level rules can be implemented (i.e. a</span>
-<span class="c1">#        rule can be a series-level or study-level rule). Series-level rules are executed as done right now.</span>
-<span class="c1">#        If a study-level rule exists that applies to a series, the series will be moved to an /incoming-study</span>
-<span class="c1">#        folder and renamed with the studyUID as prefix. Once the study is complete (via a separate time</span>
-<span class="c1">#        tigger), the study-level rules will be applied by taking each rule and collecting the series of</span>
-<span class="c1">#        the studies that apply to the rule. Each study-level rule will create a separate outgoing folder</span>
-<span class="c1">#        so that all series that apply to the study-level rule are transferred together in one DICOM</span>
-<span class="c1">#        transfer (association). This might be necessary for certain PACS systems or workstations (e.g.</span>
-<span class="c1">#        when transferring 4D series).</span>
-
-
 <div class="viewcode-block" id="receiveSignal"><a class="viewcode-back" href="../router.html#router.receiveSignal">[docs]</a><span class="k">def</span> <span class="nf">receiveSignal</span><span class="p">(</span><span class="n">signalNumber</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Function for testing purpose only. Should be removed.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Received: </span><span class="si">{signalNumber}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -213,6 +210,9 @@
     <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.shutdown&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Shutdown requested&#39;</span><span class="p">)</span>
     <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">SHUTDOWN_REQUEST</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="c1"># Note: main_loop can be read here because it has been declares as global variable</span>
+    <span class="k">if</span> <span class="s1">&#39;main_loop&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">main_loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+        <span class="n">main_loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
     <span class="n">helper</span><span class="o">.</span><span class="n">triggerTerminate</span><span class="p">()</span></div>
 
 
@@ -237,19 +237,25 @@
     <span class="n">series</span><span class="o">=</span><span class="p">{}</span>
     <span class="n">completeSeries</span><span class="o">=</span><span class="p">{}</span>
 
+    <span class="n">error_files_found</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="c1"># Check the incoming folder for completed series. To this end, generate a map of all</span>
     <span class="c1"># series in the folder with the timestamp of the latest DICOM file as value</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s1">&#39;incoming_folder&#39;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tags&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">entry</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-                <span class="n">filecount</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">seriesString</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">modificationTime</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span>
+        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tags&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">entry</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">filecount</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">seriesString</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">modificationTime</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span>
 
-                <span class="k">if</span> <span class="n">seriesString</span> <span class="ow">in</span> <span class="n">series</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">modificationTime</span> <span class="o">&gt;</span> <span class="n">series</span><span class="p">[</span><span class="n">seriesString</span><span class="p">]:</span>
-                        <span class="n">series</span><span class="p">[</span><span class="n">seriesString</span><span class="p">]</span><span class="o">=</span><span class="n">modificationTime</span>
-                <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">seriesString</span> <span class="ow">in</span> <span class="n">series</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">modificationTime</span> <span class="o">&gt;</span> <span class="n">series</span><span class="p">[</span><span class="n">seriesString</span><span class="p">]:</span>
                     <span class="n">series</span><span class="p">[</span><span class="n">seriesString</span><span class="p">]</span><span class="o">=</span><span class="n">modificationTime</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">series</span><span class="p">[</span><span class="n">seriesString</span><span class="p">]</span><span class="o">=</span><span class="n">modificationTime</span>
+        <span class="c1"># Check if at least one .error file exists. In that case, the incoming folder should</span>
+        <span class="c1"># be searched for .error files at the end of the update run</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">error_files_found</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.error&quot;</span><span class="p">):</span>
+            <span class="n">error_files_found</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># Check if any of the series exceeds the &quot;series complete&quot; threshold</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">series</span><span class="p">:</span>
@@ -272,7 +278,10 @@
             <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="s2">&quot;Exception while processing series&quot;</span><span class="p">)</span>
         <span class="c1"># If termination is requested, stop processing series after the active one has been completed</span>
         <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
-            <span class="k">break</span></div>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">error_files_found</span><span class="p">:</span>
+        <span class="n">process_error_files</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="exitRouter"><a class="viewcode-back" href="../router.html#router.exitRouter">[docs]</a><span class="k">def</span> <span class="nf">exitRouter</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -331,8 +340,9 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Outgoing folder: </span><span class="si">{config.hermes[&quot;outgoing_folder&quot;]}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># Start the timer that will periodically trigger the scan of the incoming folder</span>
-    <span class="n">mainLoop</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">RepeatedTimer</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s1">&#39;router_scan_interval&#39;</span><span class="p">],</span> <span class="n">runRouter</span><span class="p">,</span> <span class="n">exitRouter</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">mainLoop</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">global</span> <span class="n">main_loop</span>
+    <span class="n">main_loop</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">RepeatedTimer</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s1">&#39;router_scan_interval&#39;</span><span class="p">],</span> <span class="n">runRouter</span><span class="p">,</span> <span class="n">exitRouter</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">main_loop</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.boot&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 

@@ -166,7 +166,6 @@
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 <span class="kn">import</span> <span class="nn">graphyte</span>
 
@@ -176,8 +175,9 @@
 <span class="kn">from</span> <span class="nn">common.helper</span> <span class="k">import</span> <span class="n">has_been_send</span><span class="p">,</span> <span class="n">is_ready_for_sending</span>
 <span class="kn">from</span> <span class="nn">dispatch.send</span> <span class="k">import</span> <span class="n">execute</span>
 
-<span class="c1"># Dispatcher version</span>
+
 <span class="n">hermes_dispatcher_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
+
 
 <span class="n">daiquiri</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
@@ -204,6 +204,7 @@
 
 
 <div class="viewcode-block" id="dispatch"><a class="viewcode-back" href="../dispatcher.html#dispatcher.dispatch">[docs]</a><span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Main entry function. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
         <span class="k">return</span>
     <span class="k">try</span><span class="p">:</span>
@@ -219,6 +220,7 @@
 
     <span class="n">success_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;success_folder&quot;</span><span class="p">])</span>
     <span class="n">error_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;error_folder&quot;</span><span class="p">])</span>
+
     <span class="k">with</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;outgoing_folder&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">it</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -228,7 +230,8 @@
             <span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Sending folder </span><span class="si">{entry.path}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">execute</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="p">),</span> <span class="n">success_folder</span><span class="p">,</span> <span class="n">error_folder</span><span class="p">)</span>
-            <span class="c1"># If termination is requested, stop processing series after the </span>
+
+            <span class="c1"># If termination is requested, stop processing series after the</span>
             <span class="c1"># active one has been completed</span>
             <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
                 <span class="k">break</span></div>

@@ -156,7 +156,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for cleaner</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Standard python includes</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">cleaner.py</span>
+<span class="sd">==========</span>
+<span class="sd">The cleaner service of hermes. Responsible for deleting processed data after</span>
+<span class="sd">retention time has passed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">signal</span>
@@ -165,27 +170,25 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">rmtree</span>
-
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 <span class="kn">import</span> <span class="nn">graphyte</span>
 
 <span class="kn">import</span> <span class="nn">common.config</span> <span class="k">as</span> <span class="nn">config</span>
 <span class="kn">import</span> <span class="nn">common.helper</span> <span class="k">as</span> <span class="nn">helper</span>
 <span class="kn">import</span> <span class="nn">common.monitor</span> <span class="k">as</span> <span class="nn">monitor</span>
-<span class="kn">from</span> <span class="nn">common.helper</span> <span class="k">import</span> <span class="n">is_ready_for_sending</span>
 <span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">send_series_event</span>
-<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span> 
+<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span>
 
 
 <span class="n">hermes_cleaner_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
+
 
 <span class="n">daiquiri</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
     <span class="n">outputs</span><span class="o">=</span><span class="p">(</span>
         <span class="n">daiquiri</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">Stream</span><span class="p">(</span>
             <span class="n">formatter</span><span class="o">=</span><span class="n">daiquiri</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">ColorFormatter</span><span class="p">(</span>
-                <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(color)s%(levelname)-8.8s</span><span class="s2"> &quot;</span>
-                <span class="s2">&quot;</span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s%(color_stop)s</span><span class="s2">&quot;</span>
+                <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(color)s%(levelname)-8.8s</span><span class="s2"> &quot;</span> <span class="s2">&quot;</span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s%(color_stop)s</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="p">),</span>
     <span class="p">),</span>
@@ -205,24 +208,35 @@
 
 
 <div class="viewcode-block" id="clean"><a class="viewcode-back" href="../cleaner.html#cleaner.clean">[docs]</a><span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Main entry function. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
         <span class="k">return</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unable to update configuration. Skipping processing.&quot;</span><span class="p">)</span>
-        <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span><span class="s2">&quot;Unable to update configuration (possibly locked)&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unable to read configuration. Skipping processing.&quot;</span><span class="p">)</span>
+        <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span>
+            <span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span>
+            <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+            <span class="s2">&quot;Unable to read configuration (possibly locked)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">return</span>
 
     <span class="n">success_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;success_folder&quot;</span><span class="p">]</span>
     <span class="n">discard_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;discard_folder&quot;</span><span class="p">]</span>
     <span class="n">retention</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;retention&quot;</span><span class="p">])</span>
 
+    <span class="c1"># TODO: Adaptively reduce the retention time if the disk space is running low</span>
+
     <span class="n">clean_success</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span>
     <span class="n">clean_discard</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="clean_discard"><a class="viewcode-back" href="../cleaner.html#cleaner.clean_discard">[docs]</a><span class="k">def</span> <span class="nf">clean_discard</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans the discard folder if it is older than the retention time, starting</span>
+<span class="sd">    from oldest first.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">)</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span>
@@ -231,12 +245,14 @@
     <span class="p">]</span>
     <span class="n">oldest_first</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">oldest_first</span><span class="p">:</span>
-        <span class="n">series_uid</span> <span class="o">=</span> <span class="n">find_series_uid</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">rmtree</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">send_series_event</span><span class="p">(</span><span class="n">s_events</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+        <span class="n">delete_folder</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="clean_success"><a class="viewcode-back" href="../cleaner.html#cleaner.clean_success">[docs]</a><span class="k">def</span> <span class="nf">clean_success</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans the success folder if it is older than the retention time, starting</span>
+<span class="sd">    from oldest first.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># list of (sent.txt path, modification time)</span>
     <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
@@ -245,16 +261,43 @@
     <span class="p">]</span>
     <span class="n">oldest_first</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">oldest_first</span><span class="p">:</span>
-        <span class="n">series_uid</span> <span class="o">=</span> <span class="n">find_series_uid</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">rmtree</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
-        <span class="n">send_series_event</span><span class="p">(</span><span class="n">CLEAN</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
-        
+        <span class="n">delete_folder</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="find_series_uid"><a class="viewcode-back" href="../cleaner.html#cleaner.find_series_uid">[docs]</a><span class="k">def</span> <span class="nf">find_series_uid</span><span class="p">(</span><span class="nb">dir</span><span class="p">):</span>
-    <span class="n">to_be_deleted_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+<div class="viewcode-block" id="delete_folder"><a class="viewcode-back" href="../cleaner.html#cleaner.delete_folder">[docs]</a><span class="k">def</span> <span class="nf">delete_folder</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Deletes given folder. &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sent_txt_path</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">delete_path</span> <span class="o">=</span> <span class="n">sent_txt_path</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">series_uid</span> <span class="o">=</span> <span class="n">find_series_uid</span><span class="p">(</span><span class="n">sent_txt_path</span><span class="p">)</span>
+        <span class="n">rmtree</span><span class="p">(</span><span class="n">delete_path</span><span class="p">)</span>
+        <span class="n">send_series_event</span><span class="p">(</span>
+            <span class="n">s_events</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">,</span>
+            <span class="n">series_uid</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">f</span><span class="s2">&quot;Successful deleted folder </span><span class="si">{delete_path}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">send_series_event</span><span class="p">(</span>
+            <span class="n">s_events</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+            <span class="n">series_uid</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">f</span><span class="s2">&quot;Error deleting folder </span><span class="si">{delete_path}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_series_uid"><a class="viewcode-back" href="../cleaner.html#cleaner.find_series_uid">[docs]</a><span class="k">def</span> <span class="nf">find_series_uid</span><span class="p">(</span><span class="n">work_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds series uid which is always part before the &#39;#&#39;-sign in filename.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">to_be_deleted_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">to_be_deleted_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;series_uid-not-found&quot;</span></div>
 
 
 <div class="viewcode-block" id="exit_cleaner"><a class="viewcode-back" href="../cleaner.html#cleaner.exit_cleaner">[docs]</a><span class="k">def</span> <span class="nf">exit_cleaner</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -292,8 +335,10 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Cannot start service. Going down.&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;cleaner&#39;</span><span class="p">,</span><span class="s2">&quot;main&quot;</span><span class="p">,</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s1">&#39;bookkeeper&#39;</span><span class="p">])</span>
-    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">BOOT</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span><span class="n">f</span><span class="s1">&#39;PID = {os.getpid()}&#39;</span><span class="p">)</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;cleaner&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;bookkeeper&quot;</span><span class="p">])</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span>
+        <span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">BOOT</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;PID = {os.getpid()}&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">graphite_prefix</span> <span class="o">=</span> <span class="s2">&quot;hermes.cleaner.main&quot;</span>
 

@@ -159,14 +159,11 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">send.py</span>
 <span class="sd">====================================</span>
-<span class="sd">The file for sending the dicoms to</span>
-<span class="sd">target destination.</span>
+<span class="sd">The functions for sending DICOM series</span>
+<span class="sd">to target destinations.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">shlex</span>
+
 <span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">shlex</span> <span class="k">import</span> <span class="n">split</span>
@@ -175,11 +172,9 @@
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 
 <span class="kn">from</span> <span class="nn">common.helper</span> <span class="k">import</span> <span class="n">is_ready_for_sending</span>
-<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">send_series_event</span>
-<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span>
+<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span><span class="p">,</span> <span class="n">send_series_event</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">daiquiri</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;send&quot;</span><span class="p">)</span>
-
 
 <span class="n">DCMSEND_ERROR_CODES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;EXITCODE_COMMANDLINE_SYNTAX_ERROR&quot;</span><span class="p">,</span>
@@ -194,21 +189,7 @@
 <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">_read_target</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
-    <span class="n">target_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;target.json&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_create_command</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
-    <span class="n">target</span> <span class="o">=</span> <span class="n">_read_target</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">key</span> <span class="ow">in</span> <span class="n">target</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;target_ip&quot;</span><span class="p">,</span> <span class="s2">&quot;target_port&quot;</span><span class="p">,</span> <span class="s2">&quot;target_aet_target&quot;</span><span class="p">]]</span>
-    <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-            <span class="n">f</span><span class="s2">&quot;Mandatory key of [&#39;target_ip&#39;, &#39;target_port&#39;, &#39;target_aet_target&#39;] is missing in target.json = </span><span class="si">{target}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+<span class="k">def</span> <span class="nf">_create_command</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
     <span class="n">target_ip</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_ip&quot;</span><span class="p">]</span>
     <span class="n">target_port</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_port&quot;</span><span class="p">]</span>
     <span class="n">target_aet_target</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_aet_target&quot;</span><span class="p">]</span>
@@ -227,34 +208,47 @@
 <span class="sd">    happens any error the .lock file is deleted and an .error file is created.</span>
 <span class="sd">    Folder with .error files are _not_ ready for sending.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">is_ready_for_sending</span><span class="p">(</span><span class="n">source_folder</span><span class="p">):</span>
+    <span class="n">ready</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">is_ready_for_sending</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ready</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Folder </span><span class="si">{source_folder}</span><span class="s2"> is ready for sending&quot;</span><span class="p">)</span>
         <span class="c1"># Create a .sending file to indicate that this folder is being sent,</span>
         <span class="c1"># otherwise the dispatcher would pick it up again if the transfer is</span>
         <span class="c1"># still going on</span>
         <span class="n">lock_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span>
         <span class="n">lock_file</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
-        <span class="n">command</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">_create_command</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span>
+        <span class="n">command</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">_create_command</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">source_folder</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Running command </span><span class="si">{command}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">run</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="n">f</span><span class="s2">&quot;Folder </span><span class="si">{source_folder}</span><span class="s2"> was sent successful, moving to </span><span class="si">{success_folder}</span><span class="s2">&quot;</span>
+                <span class="n">f</span><span class="s2">&quot;Folder </span><span class="si">{source_folder}</span><span class="s2"> successfully sent, moving to </span><span class="si">{success_folder}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-            <span class="n">lock_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-            <span class="n">_move_sent_directory</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">source_folder</span><span class="p">)</span>
+            <span class="c1"># Send bookkeeper notification</span>
             <span class="n">file_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.dcm&quot;</span><span class="p">)))</span>
             <span class="n">send_series_event</span><span class="p">(</span>
-                <span class="n">s_event</span><span class="o">.</span><span class="n">DISPATCH</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;series_uid&quot;</span><span class="p">],</span> <span class="n">file_count</span><span class="p">,</span> <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_name&quot;</span><span class="p">],</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">s_events</span><span class="o">.</span><span class="n">DISPATCH</span><span class="p">,</span>
+                <span class="n">target</span><span class="p">[</span><span class="s2">&quot;series_uid&quot;</span><span class="p">],</span>
+                <span class="n">file_count</span><span class="p">,</span>
+                <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_name&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_move_sent_directory</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">source_folder</span><span class="p">)</span>
+            <span class="c1"># Move was successfull, so lockfile .sending can be deleted</span>
             <span class="n">lock_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">dcmsend_error_message</span> <span class="o">=</span> <span class="n">DCMSEND_ERROR_CODES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="n">f</span><span class="s2">&quot;Failed command:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{command}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">because of </span><span class="si">{dcmsend_error_message}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
             <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;.error&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
-
+            <span class="n">send_series_event</span><span class="p">(</span>
+                <span class="n">s_events</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                <span class="n">target</span><span class="p">[</span><span class="s2">&quot;series_uid&quot;</span><span class="p">],</span>
+                <span class="n">file_count</span><span class="p">,</span>
+                <span class="n">target</span><span class="p">[</span><span class="s2">&quot;target_name&quot;</span><span class="p">],</span>
+                <span class="n">dcmsend_error_message</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">lock_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Folder </span><span class="si">{source_folder}</span><span class="s2"> is *not* ready for sending&quot;</span><span class="p">)</span></div>
 
@@ -262,8 +256,8 @@
 <span class="k">def</span> <span class="nf">_move_sent_directory</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">source_folder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This check is needed if there is already a folder with the same name</span>
-<span class="sd">    in the success folder (sent two time). Then a new directory is created</span>
-<span class="sd">    with a timestamp as suffix.</span>
+<span class="sd">    in the success folder. If so a new directory is create with a timestamp</span>
+<span class="sd">    as suffix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">success_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span>

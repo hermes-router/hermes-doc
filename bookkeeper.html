@@ -173,57 +173,69 @@
 <dl class="function">
 <dt id="bookkeeper.create_database">
 <code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">create_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#create_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.create_database" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates all tables in the database if they do not exist.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.execute_db_operation">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">execute_db_operation</code><span class="sig-paren">(</span><em class="sig-param">operation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#execute_db_operation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.execute_db_operation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Executes a previously prepared database operation.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.parse_and_submit_tags">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">parse_and_submit_tags</code><span class="sig-paren">(</span><em class="sig-param">payload</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#parse_and_submit_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.parse_and_submit_tags" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Helper function that reads series information from the request body.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.post_hermes_event">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_hermes_event</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_hermes_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_hermes_event" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Endpoint for receiving Hermes system events.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.post_series_event">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_series_event</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_series_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_series_event" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Endpoint for logging all events related to one series.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.post_webgui_event">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_webgui_event</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_webgui_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_webgui_event" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Endpoint for logging relevant events of the webgui.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.register_dicom">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">register_dicom</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#register_dicom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.register_dicom" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Endpoint for registering newly received DICOM files. Called by the getdcmtags module.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.register_series">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">register_series</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#register_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.register_series" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Endpoint that is called by the router whenever a new series arrives.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.shutdown">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Disconnect from database on shutdown.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.startup">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">startup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.startup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Connects to database on startup. If the database does not exist, it will 
+be created.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bookkeeper.test_endpoint">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">test_endpoint</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#test_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.test_endpoint" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Endpoint for testing that the bookkeeper is active.</p>
+</dd></dl>
 
 </div>
 
