@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dispatch package &mdash; Hermes 0.1a documentation</title>
+  <title>Package dispatch &mdash; Hermes 0.1a documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="dispatcher module" href="dispatcher.html" />
-    <link rel="prev" title="common package" href="common.html" /> 
+    <link rel="next" title="Package routing" href="routing.html" />
+    <link rel="prev" title="Package common" href="common.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,29 +88,34 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dispatch package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.process_dcmsend_result">dispatch.process_dcmsend_result module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.send">dispatch.send module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">Service router</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">Service webgui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Package common</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Package dispatch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.process_dcmsend_result">dispatch.process_dcmsend_result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.retry">dispatch.retry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.send">dispatch.send</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#send-py">send.py</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dispatch">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.status">dispatch.status</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </li>
 </ul>
@@ -160,7 +165,7 @@
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
-      <li>dispatch package</li>
+      <li>Package dispatch</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -177,36 +182,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dispatch-package">
-<h1>dispatch package<a class="headerlink" href="#dispatch-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
+  <div class="section" id="package-dispatch">
+<h1>Package dispatch<a class="headerlink" href="#package-dispatch" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-dispatch.process_dcmsend_result">
-<span id="dispatch-process-dcmsend-result-module"></span><h2>dispatch.process_dcmsend_result module<a class="headerlink" href="#module-dispatch.process_dcmsend_result" title="Permalink to this headline">¶</a></h2>
+<span id="dispatch-process-dcmsend-result"></span><h2>dispatch.process_dcmsend_result<a class="headerlink" href="#module-dispatch.process_dcmsend_result" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="dispatch.process_dcmsend_result.create_arg_parser">
 <code class="sig-prename descclassname">dispatch.process_dcmsend_result.</code><code class="sig-name descname">create_arg_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/process_dcmsend_result.html#create_arg_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.process_dcmsend_result.create_arg_parser" title="Permalink to this definition">¶</a></dt>
-<dd><p>“Creates and returns the ArgumentParser object.</p>
+<dd><p>Creates and returns the ArgumentParser object.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="dispatch.process_dcmsend_result.parse">
 <code class="sig-prename descclassname">dispatch.process_dcmsend_result.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">result_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/process_dcmsend_result.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.process_dcmsend_result.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses dcmsend result file and return a python dictionary.</p>
+<dd><p>Parses the dcmsend result file and returns a python dictionary.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatch.retry">
+<span id="dispatch-retry"></span><h2>dispatch.retry<a class="headerlink" href="#module-dispatch.retry" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dispatch.retry.increase_retry">
+<code class="sig-prename descclassname">dispatch.retry.</code><code class="sig-name descname">increase_retry</code><span class="sig-paren">(</span><em class="sig-param">source_folder</em>, <em class="sig-param">retry_max</em>, <em class="sig-param">retry_delay</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/retry.html#increase_retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.retry.increase_retry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increases the retries counter and set the wait counter to a new time
+in the future.
+:return True if increase has been successful or False if maximum retries
+has been reached</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-dispatch.send">
-<span id="dispatch-send-module"></span><h2>dispatch.send module<a class="headerlink" href="#module-dispatch.send" title="Permalink to this headline">¶</a></h2>
+<span id="dispatch-send"></span><h2>dispatch.send<a class="headerlink" href="#module-dispatch.send" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="send-py">
 <h3>send.py<a class="headerlink" href="#send-py" title="Permalink to this headline">¶</a></h3>
 <p>The functions for sending DICOM series
 to target destinations.</p>
 <dl class="function">
 <dt id="dispatch.send.execute">
-<code class="sig-prename descclassname">dispatch.send.</code><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">source_folder</em>, <em class="sig-param">success_folder</em>, <em class="sig-param">error_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/send.html#execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.send.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute the dcmsend command. It will create a .lock file to indicate that
+<code class="sig-prename descclassname">dispatch.send.</code><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">source_folder: pathlib.Path</em>, <em class="sig-param">success_folder: pathlib.Path</em>, <em class="sig-param">error_folder: pathlib.Path</em>, <em class="sig-param">retry_max</em>, <em class="sig-param">retry_delay</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/send.html#execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.send.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the dcmsend command. It will create a .sending file to indicate that
 the folder is being sent. This is to prevent double sending. If there
 happens any error the .lock file is deleted and an .error file is created.
 Folder with .error files are _not_ ready for sending.</p>
@@ -214,8 +228,31 @@ Folder with .error files are _not_ ready for sending.</p>
 
 </div>
 </div>
-<div class="section" id="module-dispatch">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dispatch" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-dispatch.status">
+<span id="dispatch-status"></span><h2>dispatch.status<a class="headerlink" href="#module-dispatch.status" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="dispatch.status.has_been_send">
+<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">has_been_send</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#has_been_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.has_been_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given folder has already been sent.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatch.status.is_ready_for_sending">
+<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">is_ready_for_sending</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#is_ready_for_sending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.is_ready_for_sending" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a case in the outgoing folder is ready for sending by the dispatcher.</p>
+<p>No lock file (.lock) should be in sending folder and no error file (.error),
+if there is one copy/move is not done yet. Also at least some dicom files
+should be there for sending. Also checks for a target.json file and if it is
+valid.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatch.status.is_target_json_valid">
+<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">is_target_json_valid</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#is_target_json_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.is_target_json_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the target.json file exists and is also valid. Mandatory
+keys are target_ip, target_port and target_aet_target.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -227,10 +264,10 @@ Folder with .error files are _not_ ready for sending.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dispatcher.html" class="btn btn-neutral float-right" title="dispatcher module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="routing.html" class="btn btn-neutral float-right" title="Package routing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="common.html" class="btn btn-neutral float-left" title="common package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="common.html" class="btn btn-neutral float-left" title="Package common" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

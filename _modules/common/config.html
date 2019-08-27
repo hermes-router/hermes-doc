@@ -86,9 +86,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -178,6 +181,8 @@
     <span class="s1">&#39;dispatcher_scan_interval&#39;</span> <span class="p">:</span>               <span class="mi">1</span><span class="p">,</span> <span class="c1"># in seconds</span>
     <span class="s1">&#39;cleaner_scan_interval&#39;</span>    <span class="p">:</span>              <span class="mi">10</span><span class="p">,</span> <span class="c1"># in seconds</span>
     <span class="s1">&#39;retention&#39;</span>                <span class="p">:</span>          <span class="mi">604800</span><span class="p">,</span> <span class="c1"># in seconds (7 days)</span>
+    <span class="s1">&#39;retry_delay&#39;</span>              <span class="p">:</span>             <span class="mi">300</span><span class="p">,</span> <span class="c1"># in seconds (5 min)</span>
+    <span class="s1">&#39;retry_max&#39;</span>                <span class="p">:</span>               <span class="mi">3</span><span class="p">,</span>
     <span class="s1">&#39;series_complete_trigger&#39;</span>  <span class="p">:</span>              <span class="mi">60</span><span class="p">,</span> <span class="c1"># in seconds</span>
     <span class="s1">&#39;graphite_ip&#39;</span>              <span class="p">:</span>              <span class="s1">&#39;&#39;</span><span class="p">,</span>
     <span class="s1">&#39;graphite_port&#39;</span>            <span class="p">:</span>            <span class="mi">2003</span><span class="p">,</span>
@@ -191,7 +196,7 @@
 
 <div class="viewcode-block" id="read_config"><a class="viewcode-back" href="../../common.html#common.config.read_config">[docs]</a><span class="k">def</span> <span class="nf">read_config</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Reads the configuration settings (rules, targets, general settings) from the configuration file. The configuration will</span>
-<span class="sd">       only be updated if the file has changed compared the the last function call. If the configuration file is locked by </span>
+<span class="sd">       only be updated if the file has changed compared the the last function call. If the configuration file is locked by</span>
 <span class="sd">       another process, an exception will be raised.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">hermes</span>
     <span class="k">global</span> <span class="n">configuration_timestamp</span>
@@ -236,7 +241,7 @@
             <span class="c1">#logger.info(&quot;Active configuration: &quot;)</span>
             <span class="c1">#logger.info(json.dumps(hermes, indent=4))</span>
             <span class="c1">#logger.info(&quot;&quot;)</span>
-            
+
             <span class="n">configuration_timestamp</span><span class="o">=</span><span class="n">timestamp</span>
             <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="s2">&quot;Configuration updated&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">hermes</span>
@@ -245,7 +250,7 @@
 
 
 <div class="viewcode-block" id="save_config"><a class="viewcode-back" href="../../common.html#common.config.save_config">[docs]</a><span class="k">def</span> <span class="nf">save_config</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Saves the current configuration in a file on the disk. Raises an exception if the file has </span>
+    <span class="sd">&quot;&quot;&quot;Saves the current configuration in a file on the disk. Raises an exception if the file has</span>
 <span class="sd">       been locked by another process.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">configuration_timestamp</span>
     <span class="n">configuration_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">configuration_filename</span><span class="p">)</span>
@@ -270,7 +275,7 @@
 
 
 <div class="viewcode-block" id="checkFolders"><a class="viewcode-back" href="../../common.html#common.config.checkFolders">[docs]</a><span class="k">def</span> <span class="nf">checkFolders</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check if all required folders for storing DICOMs exist.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Checks if all required folders for handling the DICOM files exist.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;incoming_folder&#39;</span><span class="p">,</span><span class="s1">&#39;outgoing_folder&#39;</span><span class="p">,</span><span class="s1">&#39;success_folder&#39;</span><span class="p">,</span><span class="s1">&#39;error_folder&#39;</span><span class="p">,</span><span class="s1">&#39;discard_folder&#39;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">hermes</span><span class="p">[</span><span class="n">entry</span><span class="p">])</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Folder not found </span><span class="si">{hermes[entry]}</span><span class="s2">&quot;</span><span class="p">)</span>

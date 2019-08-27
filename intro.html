@@ -86,11 +86,17 @@
 </ul>
 <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">What is Hermes?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What is Hermes?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -159,11 +165,52 @@
             
   <div class="section" id="what-is-hermes">
 <h1>What is Hermes?<a class="headerlink" href="#what-is-hermes" title="Permalink to this headline">¶</a></h1>
-<p>Hermes is a solution for routing DICOM image series to different target nodes depending on routing rules that can be
-defined using Hermes’ web-based user interface. This is commonly known as DICOM proxy or DICOM router.</p>
+<p>Hermes is a solution for routing medical images (DICOM series) to different targets based on routing rules that can be defined using Hermes’ web-based user interface. There are various situations when such a “DICOM proxy” or “DICOM router” is needed:</p>
+<ul class="simple">
+<li><p>It is often necessary to send certain studies to special image-analysis software (e.g., all cardiac MR studies to dedicated CMR software). Setting up the corresponding DICOM nodes on every scanner and keeping settings up-to-date is time-consuming and prone to errors</p></li>
+<li><p>Manual transfer of studies to application-specific processing tools requires instructing staff which series to send to which analysis software. This can be challenging in larger departments, especially when new software tools or prototypes are installed frequently</p></li>
+<li><p>Many scanners only allow configuring a limited number of destination nodes (often only three), which can be insufficient for integrating all required analysis tools</p></li>
+<li><p>Sometimes the same series should be sent to multiple destinations (e.g., to compare tools), or the incoming series should be distributed to multiple server instances (“load balancing”)</p></li>
+</ul>
+<p>Hermes can automate all of these tasks. While other commercial DICOM routing solutions exist (often with a hefty price tag), Hermes provides a number of unique features that make it attractive especially in research-focused environments:</p>
+<ul class="simple">
+<li><p>Simple-to-use interface with personal accounts for managing routing rules and targets</p></li>
+<li><p>Powerful, yet intuitive language for defining routing rules</p></li>
+<li><p>Modularized design for high availability, reliability, and scalability</p></li>
+<li><p>Extensive monitoring capabilities</p></li>
+<li><p>Completely free</p></li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This section is coming soon.</p>
+<p>Hermes has been released as open-source package under the <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPL-3.0 license</a> This means that it can be installed and used without paying any charges. Moreover, the source code can be downloaded and modified if specific functionality is required. Hermes has been written in the Python language and is easily customizable.</p>
+</div>
+<div class="section" id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<p>The Hermes router consists of multiple service modules that interact with each other. The modularized architecture ensures high reliability of the routing system. For example, in the (unlikely) event that one of the modules crashes or needs to be restarted, the other modules continue to function (e.g., the router continues to receive images from the scanners). Moreover, all modules have been designed such that instances can be scaled-up if higher processing power is needed (e.g., the router can be configured to send out two or more series at the same time). Lastly, the modularized design makes it easy to extend the router’s capabilities by replacing individual modules with customized versions.</p>
+<div class="topic">
+<p class="topic-title first">Receiver</p>
+<p>The receiver service listens to incoming connections, receives DICOM images, and extracts relevant DICOM tags that can be used in the routing rules. It forks a separate process for every incoming connection, so that images from multiple senders can be received simultaneously. Internally, it uses the widely-established storescp tool from the Office DCMTK for image reception.</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Router</p>
+<p>The router service monitors incoming images. Once a series is complete, it checks if any of the configured routing rules applies for the series. If that is case, it will create a dispatch request for the corresponding DICOM target. If no routing rule applies, it will discard the images (the images are kept for a retention period before final deletion, so that accidentally discarded images can still be recovered).</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Dispatcher</p>
+<p>The dispatcher service will send the prepared series to the desired target DICOM nodes. In case the DICOM target is temporarily unavailable or if the DICOM transfer fails, it will retry the transfer after a configurable waiting period. After a configurable number of unsuccessful retries, the DICOM images will be moved to an error folder and an alert will be triggered. The transfer can later be restarted again.</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Cleaner</p>
+<p>The cleaner service deletes processed images after the (configurable) retention period has passed. This applies to discarded images (for which no routing rule had triggered) as well as dispatched images (which have been successfully transferred to the desired targets).</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Bookkeeper</p>
+<p>The bookkeeper service acts as central monitoring instance for all router activity. It receives notifications from every router component and stores the data in a PostgreSQL database. This makes it possible to review the routing history of every image that passed through the router. The bookkeeper also stores extended information about the received series (e.g., the used contrast agent), so that it can be used as source for data mining. Moreover, it records all errors or processing abnormalities and can trigger automatic alerts.</p>
+</div>
+<div class="topic">
+<p class="topic-title first">Webgui</p>
+<p>The webgui module provides a convenient web-based user interface that allows configuring new targets and routing rules, as well as monitoring the router status. It uses an authorization system with personal accounts, which can either have full administrator rights or read-only rights. All relevant activities in the webgui are recorded by the bookkeeper, so that it is documented which user made which changes in the router configuration. It also provides a tool for testing routing rules prior to activation.</p>
+</div>
 </div>
 </div>
 

@@ -86,9 +86,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -156,8 +159,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for bookkeeper</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python</span>
-
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">bookkeeper.py</span>
+<span class="sd">=============</span>
+<span class="sd">The bookkeeper service of Hermes, which receives notifications from all Hermes services</span>
+<span class="sd">and stores the information in a Postgres database.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># Standard python includes</span>
 <span class="kn">import</span> <span class="nn">uvicorn</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
@@ -178,9 +185,7 @@
  
 <span class="c1"># App-specific includes</span>
 <span class="kn">import</span> <span class="nn">common.monitor</span> <span class="k">as</span> <span class="nn">monitor</span>
-
-
-<span class="n">hermes_bookkeeper_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
+<span class="kn">import</span> <span class="nn">common.version</span> <span class="k">as</span> <span class="nn">version</span>
 
 
 <span class="c1">###################################################################################</span>
@@ -256,7 +261,7 @@
     <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
     <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">DateTime</span><span class="p">),</span>
     <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;series_uid&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-    <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;tag_patienname&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
+    <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;tag_patientname&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
     <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;tag_patientid&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
     <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;tag_accessionnumber&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
     <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s2">&quot;tag_seriesnumber&quot;</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>    
@@ -414,7 +419,7 @@
         <span class="n">query</span> <span class="o">=</span> <span class="n">dicom_series</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
             <span class="n">time</span>                      <span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> 
             <span class="n">series_uid</span>                <span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SeriesInstanceUID&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">tag_patienname</span>            <span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PatientName&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">tag_patientname</span>           <span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PatientName&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
             <span class="n">tag_patientid</span>             <span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PatientID&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
             <span class="n">tag_accessionnumber</span>       <span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AccessionNumber&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
             <span class="n">tag_seriesnumber</span>          <span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SeriesNumber&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
@@ -485,7 +490,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Hermes Bookkeeper ver </span><span class="si">{hermes_bookkeeper_version}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Hermes Bookkeeper ver </span><span class="si">{version.hermes_version}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;----------------------------&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 

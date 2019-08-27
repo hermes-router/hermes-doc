@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>common package &mdash; Hermes 0.1a documentation</title>
+  <title>Package common &mdash; Hermes 0.1a documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="dispatch package" href="dispatch.html" />
-    <link rel="prev" title="cleaner module" href="cleaner.html" /> 
+    <link rel="next" title="Package dispatch" href="dispatch.html" />
+    <link rel="prev" title="Service webgui" href="webgui.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,27 +88,32 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">common package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-common.config">common.config module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-common.helper">common.helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-common.monitor">common.monitor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-common">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">Service router</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">Service webgui</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Package common</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.config">common.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.helper">common.helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.monitor">common.monitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.rule_evaluation">common.rule_evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-common.version">common.version</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">Package dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </li>
 </ul>
@@ -158,7 +163,7 @@
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
-      <li>common package</li>
+      <li>Package common</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -175,37 +180,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="common-package">
-<h1>common package<a class="headerlink" href="#common-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
+  <div class="section" id="package-common">
+<h1>Package common<a class="headerlink" href="#package-common" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-common.config">
-<span id="common-config-module"></span><h2>common.config module<a class="headerlink" href="#module-common.config" title="Permalink to this headline">¶</a></h2>
+<span id="common-config"></span><h2>common.config<a class="headerlink" href="#module-common.config" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="common.config.checkFolders">
 <code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">checkFolders</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#checkFolders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.checkFolders" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if all required folders for storing DICOMs exist.</p>
+<dd><p>Checks if all required folders for handling the DICOM files exist.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="common.config.read_config">
 <code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">read_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#read_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.read_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the configuration settings (rules, targets, general settings) from the configuration file. The configuration will
-only be updated if the file has changed compared the the last function call. If the configuration file is locked by 
+only be updated if the file has changed compared the the last function call. If the configuration file is locked by
 another process, an exception will be raised.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="common.config.save_config">
 <code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">save_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#save_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.save_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the current configuration in a file on the disk. Raises an exception if the file has 
+<dd><p>Saves the current configuration in a file on the disk. Raises an exception if the file has
 been locked by another process.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-common.helper">
-<span id="common-helper-module"></span><h2>common.helper module<a class="headerlink" href="#module-common.helper" title="Permalink to this headline">¶</a></h2>
+<span id="common-helper"></span><h2>common.helper<a class="headerlink" href="#module-common.helper" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="common.helper.RepeatedTimer">
 <em class="property">class </em><code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">RepeatedTimer</code><span class="sig-paren">(</span><em class="sig-param">interval</em>, <em class="sig-param">function</em>, <em class="sig-param">exit_function</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#RepeatedTimer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.RepeatedTimer" title="Permalink to this definition">¶</a></dt>
@@ -233,32 +235,9 @@ while the worker function is running</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="common.helper.has_been_send">
-<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">has_been_send</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#has_been_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.has_been_send" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the given folder has already been sent.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="common.helper.isTerminated">
 <code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">isTerminated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#isTerminated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.isTerminated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the process will terminate after the current task.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="common.helper.is_ready_for_sending">
-<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">is_ready_for_sending</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#is_ready_for_sending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.is_ready_for_sending" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if a case in the outgoing folder is ready for sending by the dispatcher.</p>
-<p>No lock file (.lock) should be in sending folder and no error file (.error),
-if there is one copy/move is not done yet. Also at least some dicom files
-should be there for sending. Also checks for a target.json file and if it is
-valid.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="common.helper.is_target_json_valid">
-<code class="sig-prename descclassname">common.helper.</code><code class="sig-name descname">is_target_json_valid</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/helper.html#is_target_json_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.helper.is_target_json_valid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the target.json file exists and is also valid. Mandatory
-keys are target_ip, target_port and target_aet_target.</p>
 </dd></dl>
 
 <dl class="function">
@@ -275,7 +254,7 @@ keys are target_ip, target_port and target_aet_target.</p>
 
 </div>
 <div class="section" id="module-common.monitor">
-<span id="common-monitor-module"></span><h2>common.monitor module<a class="headerlink" href="#module-common.monitor" title="Permalink to this headline">¶</a></h2>
+<span id="common-monitor"></span><h2>common.monitor<a class="headerlink" href="#module-common.monitor" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="common.monitor.configure">
 <code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">instance</em>, <em class="sig-param">address</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/monitor.html#configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.configure" title="Permalink to this definition">¶</a></dt>
@@ -492,8 +471,33 @@ fully received and the DICOM tags have been parsed.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-common">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-common" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-common.rule_evaluation">
+<span id="common-rule-evaluation"></span><h2>common.rule_evaluation<a class="headerlink" href="#module-common.rule_evaluation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="common.rule_evaluation.parse_rule">
+<code class="sig-prename descclassname">common.rule_evaluation.</code><code class="sig-name descname">parse_rule</code><span class="sig-paren">(</span><em class="sig-param">rule</em>, <em class="sig-param">tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/rule_evaluation.html#parse_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.rule_evaluation.parse_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the given rule, replaces all tag variables with values from the given tags dictionary, and
+evaluates the rule. If the rule is invalid, an exception will be raised.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.rule_evaluation.replace_tags">
+<code class="sig-prename descclassname">common.rule_evaluation.</code><code class="sig-name descname">replace_tags</code><span class="sig-paren">(</span><em class="sig-param">rule</em>, <em class="sig-param">tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/rule_evaluation.html#replace_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.rule_evaluation.replace_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces all tags with format &#64;tagname&#64; in the given rule string with
+the corresponding values from the currently processed series (stored
+in the second argument).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.rule_evaluation.test_rule">
+<code class="sig-prename descclassname">common.rule_evaluation.</code><code class="sig-name descname">test_rule</code><span class="sig-paren">(</span><em class="sig-param">rule</em>, <em class="sig-param">tags</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/rule_evaluation.html#test_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.rule_evaluation.test_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the given rule for validity using the given tags dictionary. Similar to parse_rule but with
+more diagnostic output format for the testing dialog. Also warns about invalid tags.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-common.version">
+<span id="common-version"></span><h2>common.version<a class="headerlink" href="#module-common.version" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -505,10 +509,10 @@ fully received and the DICOM tags have been parsed.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dispatch.html" class="btn btn-neutral float-right" title="dispatch package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dispatch.html" class="btn btn-neutral float-right" title="Package dispatch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cleaner.html" class="btn btn-neutral float-left" title="cleaner module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="webgui.html" class="btn btn-neutral float-left" title="Service webgui" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

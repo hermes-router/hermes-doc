@@ -86,9 +86,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -194,7 +197,7 @@
 
 
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../dispatch.html#dispatch.process_dcmsend_result.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">result_file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Parses dcmsend result file and return a python dictionary.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Parses the dcmsend result file and returns a python dictionary.&quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">result_file</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
 
@@ -211,7 +214,7 @@
 
 
 <div class="viewcode-block" id="create_arg_parser"><a class="viewcode-back" href="../../dispatch.html#dispatch.process_dcmsend_result.create_arg_parser">[docs]</a><span class="k">def</span> <span class="nf">create_arg_parser</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;&quot;Creates and returns the ArgumentParser object.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Creates and returns the ArgumentParser object.&quot;&quot;&quot;</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Creates stripped json representation of a dcmsend result text file and prints it out.&quot;</span>
     <span class="p">)</span>

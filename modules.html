@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="bookkeeper module" href="bookkeeper.html" />
-    <link rel="prev" title="Advanced Usage" href="advanced.html" /> 
+    <link rel="next" title="Service bookkeeper" href="bookkeeper.html" />
+    <link rel="prev" title="FAQ" href="faq.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,20 +88,25 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">Service router</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">Service webgui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Package common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">Package dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </li>
 </ul>
@@ -168,37 +173,27 @@
             
   <div class="section" id="code-documentation">
 <h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Hermes has been developed using Python (and C++ for the getdcmtags module). It depends on a number of Python packages that are listed in the file requirements.txt. If you follow the installation instructions, you should already have a proper development environment. We recommend using Visual Studio Code for the development.</p>
+<p>For building the getdcmtags C++ module, we recommend using the Qt5 SDK with QtCreator. A project file for QtCreator is included in the repository (getdcmtags.pro). Make sure to copy the compiled binary into the /bin folder (preferably the Release build). getdcmtags depends on the development version of DCMTK, which can be installed with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">libdcmtk</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>The Python part of the Hermes code has been divided into separate service modules. These modules share the Python files contained in the common package and the packages with corresponding name (e.g., package routing is used by the router service).</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cleaner.html">cleaner module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html#cleaner-py">cleaner.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="router.html">Service router</a></li>
+<li class="toctree-l1"><a class="reference internal" href="webgui.html">Service webgui</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="common.html">common package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="common.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html#module-common.config">common.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html#module-common.helper">common.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html#module-common.monitor">common.monitor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html#module-common">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dispatch.html">dispatch package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html#module-dispatch.process_dcmsend_result">dispatch.process_dcmsend_result module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html#module-dispatch.send">dispatch.send module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dispatch.html#send-py">send.py</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html#module-dispatch">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dispatcher.html">dispatcher module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html#dispatcher-py">dispatcher.py</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="webgui.html">webgui module</a></li>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common.html">Package common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dispatch.html">Package dispatch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </div>
 </div>
@@ -211,10 +206,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="bookkeeper.html" class="btn btn-neutral float-right" title="bookkeeper module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="bookkeeper.html" class="btn btn-neutral float-right" title="Service bookkeeper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="advanced.html" class="btn btn-neutral float-left" title="Advanced Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-left" title="FAQ" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

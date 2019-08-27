@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="next" title="Usage" href="usage.html" />
     <link rel="prev" title="What is Hermes?" href="intro.html" /> 
 </head>
 
@@ -89,15 +89,21 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installing-hermes">Installing Hermes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#create-data-storage">Create data storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-postgresql">Installing Postgresql</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-data-storage">Creating data storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-postgresql">Installing PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-hermes-configuration">Basic Hermes configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-start-of-hermes">First start of Hermes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#completing-the-postgresql-configuration">Completing the PostgreSQL configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-redash">Installing Redash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adapting-configuration-files">Adapting configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#congratulations">Congratulations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -166,8 +172,15 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>It is recommended to install Hermes on a Linux machine running Ubuntu Server 18.04 LTS 64bit (or newer). The installer for the Ubuntu operating system can be downloaded at <a class="reference external" href="https://ubuntu.com/download/server">https://ubuntu.com/download/server</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Hermes might run on other Linux flavors as well, but the installation instructions listed on this page will likely not be applicable without modification.</p>
+</div>
 <div class="section" id="installing-hermes">
 <h2>Installing Hermes<a class="headerlink" href="#installing-hermes" title="Permalink to this headline">¶</a></h2>
+<p>After finishing the Ubuntu installation procedure, the Offis DICOM toolkit (DCMTK) and gcc compiler need to be installed. A user called “hermes” should be created (the adduser command will ask for a password), and the Hermes installation file should be cloned using the shown Git command. By default, Hermes should be installed into the home directory of the user hermes.</p>
+<p>Afterwards, the installation script should be executed. This will install the required Python runtime environment (Python 3.6 or higher) and create configuration files from the templates that are shipped with Hermes. Finally, the included “.service” files for runnning the Hermes modules as daemons need to be copied to the systemd folder and enabled via the “systemctl enable” command.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">dcmtk</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">adduser</span> <span class="n">hermes</span>
@@ -187,16 +200,30 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="create-data-storage">
-<h2>Create data storage<a class="headerlink" href="#create-data-storage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-data-storage">
+<h2>Creating data storage<a class="headerlink" href="#creating-data-storage" title="Permalink to this headline">¶</a></h2>
+<p>By default, the received DICOM files are buffered in subfolders of the directory “/home/hermes/hermes-data”. The commands listed below will create the required folders in this location.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">hermes</span><span class="nd">@localhost</span>
 <span class="n">mkdir</span> <span class="n">hermes</span><span class="o">-</span><span class="n">data</span><span class="p">;</span> <span class="n">cd</span> <span class="n">hermes</span><span class="o">-</span><span class="n">data</span>
 <span class="n">mkdir</span> <span class="n">incoming</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">outgoing</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">success</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">error</span><span class="p">;</span> <span class="n">mkdir</span> <span class="n">discard</span><span class="p">;</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The storage location for buffering the DICOM files can also be changed. This is necessary, e.g., if a dedicated hard-drive should be used for the file buffering. In this case, the storage location needs to be updated in the configuration file hermes.json, as described below.</p>
+</div>
 </div>
 <div class="section" id="installing-postgresql">
-<h2>Installing Postgresql<a class="headerlink" href="#installing-postgresql" title="Permalink to this headline">¶</a></h2>
+<h2>Installing PostgreSQL<a class="headerlink" href="#installing-postgresql" title="Permalink to this headline">¶</a></h2>
+<p>The bookkeeper service uses a PostgreSQL database to store all recorded data. Several steps are necessary to install and configure PostgreSQL. It is possible to use Hermes also without the bookkeeper service. However, it’s highly recommended to use bookkeeper, as it makes Hermes much more powerful and easy to maintain.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The commands below create a database for the Hermes data and already prepare the database for use with the Redash visualization software, as described on the Monitoring page. If Redash should not be used, all commands containing the word “redash” can be omitted.</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Note that ‘[hermes pwd]’ needs to be replaced with the password that was entered when creating user hermes (and redash, respectively).</p>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">postgresql</span> <span class="n">postgresql</span><span class="o">-</span><span class="n">contrib</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span>
 <span class="n">createuser</span> <span class="o">-</span><span class="n">P</span> <span class="n">hermes</span>
@@ -206,11 +233,6 @@
 <span class="n">ALTER</span> <span class="n">USER</span> <span class="n">hermes</span> <span class="n">WITH</span> <span class="n">PASSWORD</span> <span class="s1">&#39;[hermes pwd]&#39;</span><span class="p">;</span>
 <span class="n">ALTER</span> <span class="n">USER</span> <span class="n">redash</span> <span class="n">WITH</span> <span class="n">PASSWORD</span> <span class="s1">&#39;[redash pwd]&#39;</span><span class="p">;</span>
 <span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">hermes</span> <span class="n">to</span> <span class="n">hermes</span><span class="p">;</span>
-\<span class="n">c</span> <span class="n">hermes</span>
-<span class="n">GRANT</span> <span class="n">CONNECT</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">hermes</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
-<span class="n">GRANT</span> <span class="n">USAGE</span> <span class="n">ON</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
-<span class="n">GRANT</span> <span class="n">SELECT</span> <span class="n">ON</span> <span class="n">ALL</span> <span class="n">TABLES</span> <span class="n">IN</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
-<span class="n">ALTER</span> <span class="n">DEFAULT</span> <span class="n">PRIVILEGES</span> <span class="n">IN</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">GRANT</span> <span class="n">SELECT</span> <span class="n">ON</span> <span class="n">TABLES</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
 \<span class="n">q</span>
 <span class="n">exit</span>
 <span class="o">------</span>
@@ -227,19 +249,101 @@
 <span class="n">sudo</span> <span class="n">service</span> <span class="n">postgresql</span> <span class="n">restart</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The commands above assign read/write rights to the user “hermes”, enabling the bookkeeper service to create the required database tables and store received monitoring information in the database. However, when working with the database for data analysis, an account with read-only rights should be used to prevent accidental data modification during the analysis. This applies in particular to the created user “redash”.</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Read-only permissions can only be granted if the database tables already exist. The tables are automatically created when the bookkeeper service is started for the first time. Therefore, we first need to complete the Hermes configuration before we can grant read-only permissions.</p>
+</div>
+</div>
+<div class="section" id="basic-hermes-configuration">
+<h2>Basic Hermes configuration<a class="headerlink" href="#basic-hermes-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Before we can start Hermes for the first time, several basic configuration steps are required.</p>
+<p>First, we need to edit “webgui.env” and change the SECRET_KEY for the webgui.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">hermes</span><span class="nd">@localhost</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="n">hermes</span><span class="o">/</span><span class="n">configuration</span>
+<span class="n">nano</span> <span class="n">webgui</span><span class="o">.</span><span class="n">env</span>
+</pre></div>
+</div>
+<p>By default, the SECRET_KEY is set to “PutSomethingRandomHere” and you need to change it to something random (it doesn’t matter what exactly, just keep it a secret).</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The webgui will not start until you change the secret key.</p>
+</div>
+<p>By default, the webgui runs on port 8080. Thus, you need to enter “<a class="reference external" href="http://x.x.x.x:8000">http://x.x.x.x:8000</a>” into your webbrowser. If you want to run it on a different port, you can change the port in the file “webgui.env” as well.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Redash installation script automatically installs Redash on port :80. If you want to run the Hermes webgui on port :80 instead, you first need to change the port of Redash (see instructions in the Redash installation section).</p>
+</div>
+<p>Next, we need to tell the bookkeeper the database password. This is done in the file “bookkeeper.env”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nano</span> <span class="n">bookkeeper</span><span class="o">.</span><span class="n">env</span>
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>In this file, you can also change the port that the bookkeeper listens on (8080 by default), but that is normally not needed. If you need to change it, change it also in the file “hermes.json”.</p>
+</div>
+<p>Finally, if you are using a different storage location than “/home/hermes/hermes-data”, then you need to update the paths in the following two files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change paths in lines 3-7</span>
+<span class="n">nano</span> <span class="n">hermes</span><span class="o">.</span><span class="n">env</span>
+<span class="o">------</span>
+<span class="c1"># Change line incoming=... (also change line binary=... if using other install folder)</span>
+<span class="n">nano</span> <span class="o">../</span><span class="n">receiver</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">------</span>
+<span class="n">exit</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="first-start-of-hermes">
+<h2>First start of Hermes<a class="headerlink" href="#first-start-of-hermes" title="Permalink to this headline">¶</a></h2>
+<p>Now, we can start Hermes for the fist time. For now, let’s only start the bookkeeper service, so that the database tables are created, and the webgui, so that we can start the other services later through the webgui.</p>
+<p>The following commands need to be entered using a sudo account (i.e., not as user hermes):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">start</span> <span class="n">hermes_bookkeeper</span><span class="o">.</span><span class="n">service</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">hermes_ui</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>You can validate if the two services started correctly with the following two commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">journalctl</span> <span class="o">-</span><span class="n">u</span> <span class="n">hermes_bookkeeper</span><span class="o">.</span><span class="n">service</span>
+<span class="n">journalctl</span> <span class="o">-</span><span class="n">u</span> <span class="n">hermes_ui</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>In addition, you could open a webbrowser and test if the login page appears if you enter the server ip (with port :8000 - or the port that you selected).</p>
+</div>
+<div class="section" id="completing-the-postgresql-configuration">
+<h2>Completing the PostgreSQL configuration<a class="headerlink" href="#completing-the-postgresql-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Now that the database tables have been created by the bookkeeper, we can grant read-only permissions to the user “redash”. This can be achieved by running the following commands.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span>
+<span class="n">psql</span>
+\<span class="n">c</span> <span class="n">hermes</span>
+<span class="n">GRANT</span> <span class="n">CONNECT</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">hermes</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">USAGE</span> <span class="n">ON</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">SELECT</span> <span class="n">ON</span> <span class="n">ALL</span> <span class="n">TABLES</span> <span class="n">IN</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+<span class="n">ALTER</span> <span class="n">DEFAULT</span> <span class="n">PRIVILEGES</span> <span class="n">IN</span> <span class="n">SCHEMA</span> <span class="n">public</span> <span class="n">GRANT</span> <span class="n">SELECT</span> <span class="n">ON</span> <span class="n">TABLES</span> <span class="n">TO</span> <span class="n">redash</span><span class="p">;</span>
+\<span class="n">q</span>
+<span class="n">exit</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>These commands need to be rerun whenever the database tables have been dropped (e.g., when clearing the database).</p>
+</div>
 </div>
 <div class="section" id="installing-redash">
 <h2>Installing Redash<a class="headerlink" href="#installing-redash" title="Permalink to this headline">¶</a></h2>
+<p>Redash is a powerful open-source web application for analyzing and visualizing data stored in SQL databases, like the data collected by the bookkeeper service. Instead of integrating limited analysis functions into Hermes’ own webgui, we decided to utilize Redash instead, which provides much greater flexibility. You can learn more about Redash at <a class="reference external" href="http://redash.io">http://redash.io</a></p>
+<p>Redash provides a convenient installation script that uses Docker for the Redash deployment. It is highly recommended to use this script, unless you are very familiar with Redash.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">getredash</span><span class="o">/</span><span class="n">redash</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">setup</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">chmod</span> <span class="mi">700</span> <span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">sudo</span> <span class="o">./</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
-<p>Open redash configuration page:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">server</span> <span class="n">ip</span><span class="p">]:</span><span class="mi">5000</span><span class="o">/</span><span class="n">setup</span>
+<p>Open the Redash configuration page in a webbrowser</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">server</span> <span class="n">ip</span><span class="p">]</span><span class="o">/</span><span class="n">setup</span>
 </pre></div>
 </div>
-<p>Configure datasource using the settings:</p>
+<p>After setting up your Redash administrator password, click the top-right configuration icon and select “New Data Source”. Select a PostgreSQL database and enter the following connection settings</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Type</span><span class="p">:</span> <span class="n">Postgres</span>
 <span class="n">Name</span><span class="p">:</span> <span class="n">Hermes</span>
 <span class="n">Host</span><span class="p">:</span> <span class="mf">172.17</span><span class="o">.</span><span class="mf">0.1</span>
@@ -249,15 +353,15 @@
 <span class="n">Database</span> <span class="n">Name</span><span class="p">:</span> <span class="n">hermes</span>
 </pre></div>
 </div>
-<p>Save and test connection</p>
+<p>Afterwards, click “Save” and validate the database connection by clicking the button “Test Connection”. If you see a green “Success” notification on the bottom-right, everything works.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you want to run Redash on a different port than :80 (e.g., webgui on :80 and redash on :81), then you need to edit the file “/opt/redash/docker-compose.yml” and change the value “80:80” in the nginx section to, e.g., “81:80”. Afterwards, you need to restart the  nginx container.</p>
 </div>
-<div class="section" id="adapting-configuration-files">
-<h2>Adapting configuration files<a class="headerlink" href="#adapting-configuration-files" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Change SECRET_KEY in webgui.env (change port and host if needed)</p></li>
-<li><p>Change database password in bookkeeper.env (change port and host if needed)</p></li>
-<li><p>Change installation paths in hermes.json if needed</p></li>
-</ul>
+</div>
+<div class="section" id="congratulations">
+<h2>Congratulations<a class="headerlink" href="#congratulations" title="Permalink to this headline">¶</a></h2>
+<p>If you have made it to here, then you have mastered the installation of Hermes. Everything that follows from here will be much easier.</p>
 </div>
 </div>
 
@@ -269,7 +373,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="intro.html" class="btn btn-neutral float-left" title="What is Hermes?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

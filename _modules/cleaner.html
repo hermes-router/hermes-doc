@@ -86,9 +86,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -159,7 +162,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">cleaner.py</span>
 <span class="sd">==========</span>
-<span class="sd">The cleaner service of hermes. Responsible for deleting processed data after</span>
+<span class="sd">The cleaner service of Hermes. Responsible for deleting processed data after</span>
 <span class="sd">retention time has passed.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -176,11 +179,9 @@
 <span class="kn">import</span> <span class="nn">common.config</span> <span class="k">as</span> <span class="nn">config</span>
 <span class="kn">import</span> <span class="nn">common.helper</span> <span class="k">as</span> <span class="nn">helper</span>
 <span class="kn">import</span> <span class="nn">common.monitor</span> <span class="k">as</span> <span class="nn">monitor</span>
+<span class="kn">import</span> <span class="nn">common.version</span> <span class="k">as</span> <span class="nn">version</span>
 <span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">send_series_event</span>
 <span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span>
-
-
-<span class="n">hermes_cleaner_version</span> <span class="o">=</span> <span class="s2">&quot;0.1a&quot;</span>
 
 
 <span class="n">daiquiri</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
@@ -197,13 +198,19 @@
 
 
 <div class="viewcode-block" id="receiveSignal"><a class="viewcode-back" href="../cleaner.html#cleaner.receiveSignal">[docs]</a><span class="k">def</span> <span class="nf">receiveSignal</span><span class="p">(</span><span class="n">signalNumber</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function for testing purpose only. Should be removed.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received:&quot;</span><span class="p">,</span> <span class="n">signalNumber</span><span class="p">)</span>
     <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="terminateProcess"><a class="viewcode-back" href="../cleaner.html#cleaner.terminateProcess">[docs]</a><span class="k">def</span> <span class="nf">terminateProcess</span><span class="p">(</span><span class="n">signalNumber</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Triggers the shutdown of the service.&quot;&quot;&quot;</span>
+    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.shutdown&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shutdown requested&quot;</span><span class="p">)</span>
     <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">SHUTDOWN_REQUEST</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="c1"># Note: main_loop can be read here because it has been declared as global variable</span>
+    <span class="k">if</span> <span class="s1">&#39;main_loop&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">main_loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+        <span class="n">main_loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
     <span class="n">helper</span><span class="o">.</span><span class="n">triggerTerminate</span><span class="p">()</span></div>
 
 
@@ -211,6 +218,9 @@
     <span class="sd">&quot;&quot;&quot; Main entry function. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
         <span class="k">return</span>
+
+    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.run&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -307,7 +317,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Hermes DICOM Cleaner ver </span><span class="si">{hermes_cleaner_version}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Hermes DICOM Cleaner ver </span><span class="si">{version.hermes_version}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;----------------------------&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
@@ -352,10 +362,13 @@
             <span class="n">prefix</span><span class="o">=</span><span class="n">graphite_prefix</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="n">mainLoop</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">RepeatedTimer</span><span class="p">(</span>
+    <span class="k">global</span> <span class="n">main_loop</span>
+    <span class="n">main_loop</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">RepeatedTimer</span><span class="p">(</span>
         <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;cleaner_scan_interval&quot;</span><span class="p">],</span> <span class="n">clean</span><span class="p">,</span> <span class="n">exit_cleaner</span><span class="p">,</span> <span class="p">{}</span>
     <span class="p">)</span>
-    <span class="n">mainLoop</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">main_loop</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.boot&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Start the asyncio event loop for asynchronous function calls</span>
     <span class="n">helper</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>

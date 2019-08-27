@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>router module &mdash; Hermes 0.1a documentation</title>
+  <title>Service router &mdash; Hermes 0.1a documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="webgui module" href="webgui.html" />
-    <link rel="prev" title="dispatcher module" href="dispatcher.html" /> 
+    <link rel="next" title="Service webgui" href="webgui.html" />
+    <link rel="prev" title="Service dispatcher" href="dispatcher.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,20 +88,28 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Service router</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#router-py">router.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">Service webgui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Package common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">Package dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </li>
 </ul>
@@ -151,7 +159,7 @@
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
-      <li>router module</li>
+      <li>Service router</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -169,7 +177,10 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-router">
-<span id="router-module"></span><h1>router module<a class="headerlink" href="#module-router" title="Permalink to this headline">¶</a></h1>
+<span id="service-router"></span><h1>Service router<a class="headerlink" href="#module-router" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="router-py">
+<h2>router.py<a class="headerlink" href="#router-py" title="Permalink to this headline">¶</a></h2>
+<p>Hermes’ central router module that evaluates the routing rules and decides which series should be sent to which target.</p>
 <dl class="function">
 <dt id="router.exitRouter">
 <code class="sig-prename descclassname">router.</code><code class="sig-name descname">exitRouter</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/router.html#exitRouter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#router.exitRouter" title="Permalink to this definition">¶</a></dt>
@@ -195,6 +206,7 @@
 </dd></dl>
 
 </div>
+</div>
 
 
            </div>
@@ -204,10 +216,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="webgui.html" class="btn btn-neutral float-right" title="webgui module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="webgui.html" class="btn btn-neutral float-right" title="Service webgui" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="dispatcher.html" class="btn btn-neutral float-left" title="dispatcher module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dispatcher.html" class="btn btn-neutral float-left" title="Service dispatcher" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

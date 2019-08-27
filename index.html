@@ -87,9 +87,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
@@ -164,36 +167,49 @@
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-hermes">Installing Hermes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#create-data-storage">Create data storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-postgresql">Installing Postgresql</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-redash">Installing Redash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#adapting-configuration-files">Adapting configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#architecture">Architecture</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installing-hermes">Installing Hermes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#creating-data-storage">Creating data storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installing-postgresql">Installing PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#basic-hermes-configuration">Basic Hermes configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#first-start-of-hermes">First start of Hermes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#completing-the-postgresql-configuration">Completing the PostgreSQL configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installing-redash">Installing Redash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#congratulations">Congratulations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#log-files">Log Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#bookkeeer-with-redash">Bookkeeer with Redash</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#graphite">Graphite</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Code Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="webgui.html">webgui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">Service router</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webgui.html">Service webgui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Package common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">Package dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </li>
 </ul>

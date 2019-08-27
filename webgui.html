@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>webgui module &mdash; Hermes 0.1a documentation</title>
+  <title>Service webgui &mdash; Hermes 0.1a documentation</title>
   
 
   
@@ -36,7 +36,8 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="router module" href="router.html" /> 
+    <link rel="next" title="Package common" href="common.html" />
+    <link rel="prev" title="Service router" href="router.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,20 +88,28 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">What is Hermes?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">bookkeeper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cleaner.html">cleaner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.html">common package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatch.html">dispatch package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">dispatcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="router.html">router module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">webgui module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookkeeper.html">Service bookkeeper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cleaner.html">Service cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Service dispatcher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="router.html">Service router</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Service webgui</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#webgui-py">webgui.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Package common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatch.html">Package dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="routing.html">Package routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinterface.html">Package webinterface</a></li>
 </ul>
 </li>
 </ul>
@@ -150,7 +159,7 @@
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
-      <li>webgui module</li>
+      <li>Service webgui</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,7 +177,10 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-webgui">
-<span id="webgui-module"></span><h1>webgui module<a class="headerlink" href="#module-webgui" title="Permalink to this headline">¶</a></h1>
+<span id="service-webgui"></span><h1>Service webgui<a class="headerlink" href="#module-webgui" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="webgui-py">
+<h2>webgui.py<a class="headerlink" href="#webgui-py" title="Permalink to this headline">¶</a></h2>
+<p>The web-based graphical user interface of Hermes.</p>
 <dl class="class">
 <dt id="webgui.ExtendedUser">
 <em class="property">class </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">ExtendedUser</code><span class="sig-paren">(</span><em class="sig-param">username: str</em>, <em class="sig-param">is_admin: False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#ExtendedUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.ExtendedUser" title="Permalink to this definition">¶</a></dt>
@@ -390,6 +402,7 @@ On the first login, the user will be directed to the settings page and asked to 
 </dd></dl>
 
 </div>
+</div>
 
 
            </div>
@@ -399,8 +412,10 @@ On the first login, the user will be directed to the settings page and asked to 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="common.html" class="btn btn-neutral float-right" title="Package common" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="router.html" class="btn btn-neutral float-left" title="router module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="router.html" class="btn btn-neutral float-left" title="Service router" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
