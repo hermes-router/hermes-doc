@@ -180,7 +180,8 @@
 <div class="section" id="installing-hermes">
 <h2>Installing Hermes<a class="headerlink" href="#installing-hermes" title="Permalink to this headline">¶</a></h2>
 <p>After finishing the Ubuntu installation procedure, the Offis DICOM toolkit (DCMTK) and gcc compiler need to be installed. A user called “hermes” should be created (the adduser command will ask for a password), and the Hermes installation file should be cloned using the shown Git command. By default, Hermes should be installed into the home directory of the user hermes.</p>
-<p>Afterwards, the installation script should be executed. This will install the required Python runtime environment (Python 3.6 or higher) and create configuration files from the templates that are shipped with Hermes. Finally, the included “.service” files for runnning the Hermes modules as daemons need to be copied to the systemd folder and enabled via the “systemctl enable” command.</p>
+<p>Afterwards, the installation script should be executed. This will install the required Python runtime environment (Python 3.6 or higher) and create configuration files from the templates that are shipped with Hermes. Finally, the included “.service” files for running the Hermes modules as daemons need to be copied to the systemd folder and enabled via the “systemctl enable” command.</p>
+<p>You can perform these steps by copying the commands listed below into a bash shell. It is assumed that you are logged in as user with sudo rights.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">dcmtk</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">adduser</span> <span class="n">hermes</span>
@@ -220,10 +221,7 @@
 <p class="admonition-title">Note</p>
 <p>The commands below create a database for the Hermes data and already prepare the database for use with the Redash visualization software, as described on the Monitoring page. If Redash should not be used, all commands containing the word “redash” can be omitted.</p>
 </div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>Note that ‘[hermes pwd]’ needs to be replaced with the password that was entered when creating user hermes (and redash, respectively).</p>
-</div>
+<p>Keep in mind that ‘[hermes pwd]’ in the command below needs to be replaced with the password that was entered when creating user hermes (and redash, respectively).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">postgresql</span> <span class="n">postgresql</span><span class="o">-</span><span class="n">contrib</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span>
 <span class="n">createuser</span> <span class="o">-</span><span class="n">P</span> <span class="n">hermes</span>
@@ -253,15 +251,12 @@
 <p class="admonition-title">Note</p>
 <p>The commands above assign read/write rights to the user “hermes”, enabling the bookkeeper service to create the required database tables and store received monitoring information in the database. However, when working with the database for data analysis, an account with read-only rights should be used to prevent accidental data modification during the analysis. This applies in particular to the created user “redash”.</p>
 </div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
 <p>Read-only permissions can only be granted if the database tables already exist. The tables are automatically created when the bookkeeper service is started for the first time. Therefore, we first need to complete the Hermes configuration before we can grant read-only permissions.</p>
-</div>
 </div>
 <div class="section" id="basic-hermes-configuration">
 <h2>Basic Hermes configuration<a class="headerlink" href="#basic-hermes-configuration" title="Permalink to this headline">¶</a></h2>
-<p>Before we can start Hermes for the first time, several basic configuration steps are required.</p>
-<p>First, we need to edit “webgui.env” and change the SECRET_KEY for the webgui.</p>
+<p>Before Hermes can be started for the first time, several basic configuration steps are required.</p>
+<p>First, you need to edit “webgui.env” and change the SECRET_KEY for the webgui.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">hermes</span><span class="nd">@localhost</span>
 <span class="n">cd</span> <span class="o">~/</span><span class="n">hermes</span><span class="o">/</span><span class="n">configuration</span>
 <span class="n">nano</span> <span class="n">webgui</span><span class="o">.</span><span class="n">env</span>
@@ -277,12 +272,12 @@
 <p class="admonition-title">Note</p>
 <p>The Redash installation script automatically installs Redash on port :80. If you want to run the Hermes webgui on port :80 instead, you first need to change the port of Redash (see instructions in the Redash installation section).</p>
 </div>
-<p>Next, we need to tell the bookkeeper the database password. This is done in the file “bookkeeper.env”:</p>
+<p>Next, you need to tell the bookkeeper the database password. This needs to be done in the file “bookkeeper.env” by replacing “ChangePasswordHere” with the password that you selected for the database user hermes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nano</span> <span class="n">bookkeeper</span><span class="o">.</span><span class="n">env</span>
 </pre></div>
 </div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>In this file, you can also change the port that the bookkeeper listens on (8080 by default), but that is normally not needed. If you need to change it, change it also in the file “hermes.json”.</p>
 </div>
 <p>Finally, if you are using a different storage location than “/home/hermes/hermes-data”, then you need to update the paths in the following two files:</p>
@@ -298,7 +293,7 @@
 </div>
 <div class="section" id="first-start-of-hermes">
 <h2>First start of Hermes<a class="headerlink" href="#first-start-of-hermes" title="Permalink to this headline">¶</a></h2>
-<p>Now, we can start Hermes for the fist time. For now, let’s only start the bookkeeper service, so that the database tables are created, and the webgui, so that we can start the other services later through the webgui.</p>
+<p>Now, you can start Hermes for the fist time. For now, start only the bookkeeper service, so that the database tables are created, and the webgui, so that the other services can later be started through the webgui.</p>
 <p>The following commands need to be entered using a sudo account (i.e., not as user hermes):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">start</span> <span class="n">hermes_bookkeeper</span><span class="o">.</span><span class="n">service</span>
 <span class="n">systemctl</span> <span class="n">start</span> <span class="n">hermes_ui</span><span class="o">.</span><span class="n">service</span>
@@ -309,11 +304,11 @@
 <span class="n">journalctl</span> <span class="o">-</span><span class="n">u</span> <span class="n">hermes_ui</span><span class="o">.</span><span class="n">service</span>
 </pre></div>
 </div>
-<p>In addition, you could open a webbrowser and test if the login page appears if you enter the server ip (with port :8000 - or the port that you selected).</p>
+<p>In addition, you should open a web browser and test if the login page appears if you enter the server ip (with port :8000 - or the port that you selected).</p>
 </div>
 <div class="section" id="completing-the-postgresql-configuration">
 <h2>Completing the PostgreSQL configuration<a class="headerlink" href="#completing-the-postgresql-configuration" title="Permalink to this headline">¶</a></h2>
-<p>Now that the database tables have been created by the bookkeeper, we can grant read-only permissions to the user “redash”. This can be achieved by running the following commands.</p>
+<p>Now that the database tables have been created by the bookkeeper, you can grant read-only permissions to the user “redash”. This can be achieved by running the following commands.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span>
 <span class="n">psql</span>
 \<span class="n">c</span> <span class="n">hermes</span>
@@ -339,7 +334,7 @@
 <span class="n">sudo</span> <span class="o">./</span><span class="n">setup</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
-<p>Open the Redash configuration page in a webbrowser</p>
+<p>Open the Redash configuration page in a web browser</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">server</span> <span class="n">ip</span><span class="p">]</span><span class="o">/</span><span class="n">setup</span>
 </pre></div>
 </div>

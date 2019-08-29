@@ -90,7 +90,12 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fine-tuning">Fine tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scaling-services">Scaling services</a></li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
@@ -162,9 +167,117 @@
             
   <div class="section" id="advanced-configuration">
 <h1>Advanced Configuration<a class="headerlink" href="#advanced-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration-files">
+<h2>Configuration files<a class="headerlink" href="#configuration-files" title="Permalink to this headline">¶</a></h2>
+<p>Hermes stores the configuration in multiple files in the subfolder /configuration. If you want to backup the configuration or install Hermes on another machine, you need to copy all files inside this folder.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bookkeeper.env</p></td>
+<td><p>Contains the IP, port, and DB password for the bookkeeper</p></td>
+</tr>
+<tr class="row-odd"><td><p>hermes.json</p></td>
+<td><p>Configured targets, rules, storage location, and other Hermes settings</p></td>
+</tr>
+<tr class="row-even"><td><p>services.json</p></td>
+<td><p>Customizable list of used Hermes services</p></td>
+</tr>
+<tr class="row-odd"><td><p>users.json</p></td>
+<td><p>User information for the webgui</p></td>
+</tr>
+<tr class="row-even"><td><p>webgui.env</p></td>
+<td><p>Contains the IP, port, and secret key for the webgui</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="fine-tuning">
+<h2>Fine tuning<a class="headerlink" href="#fine-tuning" title="Permalink to this headline">¶</a></h2>
+<p>Advanced settings can be adjusted in the file hermes.json. These changes need to be done using a Linux text editor, e.g. nano.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>It is required to shutdown all Hermes services (via the webgui or systemctl command) before this file should be edited. Make sure to preserve correct formatting of the .json file.</p>
+</div>
+<p>The following settings can be customized (default values can be found in default_hermes.json):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 76%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>incoming_folder</p></td>
+<td><p>Buffer location for received DICOM files</p></td>
+</tr>
+<tr class="row-odd"><td><p>outgoing_folder</p></td>
+<td><p>Buffer location for series to be dispatched</p></td>
+</tr>
+<tr class="row-even"><td><p>success_folder</p></td>
+<td><p>Storage location for sent series until retention period has passed</p></td>
+</tr>
+<tr class="row-odd"><td><p>error_folder</p></td>
+<td><p>Storage location for files that could not be parsed or dispatched</p></td>
+</tr>
+<tr class="row-even"><td><p>discard_folder</p></td>
+<td><p>Storage location for discarded series until retention period has passed</p></td>
+</tr>
+<tr class="row-odd"><td><p>bookkeeper</p></td>
+<td><p>IP and port of the bookkeeper instance</p></td>
+</tr>
+<tr class="row-even"><td><p>graphite_ip</p></td>
+<td><p>IP address of the graphite server. Leave empty if none</p></td>
+</tr>
+<tr class="row-odd"><td><p>graphite_port</p></td>
+<td><p>Port of the graphite server</p></td>
+</tr>
+<tr class="row-even"><td><p>router_scan_interval</p></td>
+<td><p>Interval how often the router checks for arrived images (in sec)</p></td>
+</tr>
+<tr class="row-odd"><td><p>series_complete_trigger</p></td>
+<td><p>Time after arrival of last slice when series is considered complete (in sec)</p></td>
+</tr>
+<tr class="row-even"><td><p>dispatcher_scan_interval</p></td>
+<td><p>Interval how often the dispatcher checks for series to be sent (in sec)</p></td>
+</tr>
+<tr class="row-odd"><td><p>retry_delay</p></td>
+<td><p>Delay before retrying to dispatch series after failure (in sec)</p></td>
+</tr>
+<tr class="row-even"><td><p>retry_max</p></td>
+<td><p>Maximum number of retries when dispatching</p></td>
+</tr>
+<tr class="row-odd"><td><p>cleaner_scan_interval</p></td>
+<td><p>Interval how often the cleaner checks for files to be deleted (in sec)</p></td>
+</tr>
+<tr class="row-even"><td><p>retention</p></td>
+<td><p>Duration how long files will be kept before deletion (in sec)</p></td>
+</tr>
+<tr class="row-odd"><td><p>targets</p></td>
+<td><p>Configured targets - should be edited via webgui</p></td>
+</tr>
+<tr class="row-even"><td><p>rules</p></td>
+<td><p>Configured rules - should be edited via webgui</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scaling-services">
+<h2>Scaling services<a class="headerlink" href="#scaling-services" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This section is coming soon.</p>
+</div>
 </div>
 </div>
 

@@ -238,11 +238,11 @@
 
     <span class="c1"># TODO: Adaptively reduce the retention time if the disk space is running low</span>
 
-    <span class="n">clean_success</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span>
-    <span class="n">clean_discard</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span></div>
+    <span class="n">clean_dir</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span>
+    <span class="n">clean_dir</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="clean_discard"><a class="viewcode-back" href="../cleaner.html#cleaner.clean_discard">[docs]</a><span class="k">def</span> <span class="nf">clean_discard</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">):</span>
+<div class="viewcode-block" id="clean_dir"><a class="viewcode-back" href="../cleaner.html#cleaner.clean_dir">[docs]</a><span class="k">def</span> <span class="nf">clean_dir</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cleans the discard folder if it is older than the retention time, starting</span>
 <span class="sd">    from oldest first.</span>
@@ -258,28 +258,11 @@
         <span class="n">delete_folder</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="clean_success"><a class="viewcode-back" href="../cleaner.html#cleaner.clean_success">[docs]</a><span class="k">def</span> <span class="nf">clean_success</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Cleans the success folder if it is older than the retention time, starting</span>
-<span class="sd">    from oldest first.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># list of (sent.txt path, modification time)</span>
-    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">success_folder</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/sent.txt&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">retention</span> <span class="o">&lt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">i</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">))</span>
-    <span class="p">]</span>
-    <span class="n">oldest_first</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">oldest_first</span><span class="p">:</span>
-        <span class="n">delete_folder</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="delete_folder"><a class="viewcode-back" href="../cleaner.html#cleaner.delete_folder">[docs]</a><span class="k">def</span> <span class="nf">delete_folder</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Deletes given folder. &quot;&quot;&quot;</span>
+    <span class="n">delete_path</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">series_uid</span> <span class="o">=</span> <span class="n">find_series_uid</span><span class="p">(</span><span class="n">delete_path</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">sent_txt_path</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">delete_path</span> <span class="o">=</span> <span class="n">sent_txt_path</span><span class="o">.</span><span class="n">parent</span>
-        <span class="n">series_uid</span> <span class="o">=</span> <span class="n">find_series_uid</span><span class="p">(</span><span class="n">sent_txt_path</span><span class="p">)</span>
         <span class="n">rmtree</span><span class="p">(</span><span class="n">delete_path</span><span class="p">)</span>
         <span class="n">send_series_event</span><span class="p">(</span>
             <span class="n">s_events</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">,</span>
