@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Advanced Configuration" href="advanced.html" />
+    <link rel="next" title="Advanced Topics" href="advanced.html" />
     <link rel="prev" title="Usage" href="usage.html" /> 
 </head>
 
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#setting-alerts">Setting alerts</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
@@ -171,9 +171,15 @@
 <p>Hermes provides three different mechanisms for monitoring the router activity and health.</p>
 <div class="section" id="log-files">
 <h2>Log files<a class="headerlink" href="#log-files" title="Permalink to this headline">¶</a></h2>
+<p>All Hermes services write detailed logging information with timestamps into system log files. The most convenient way to review these logs is to use the “Logs” page of the Hermes web interface. Here you can see a separate tab for every service. The logs are updated whenever you switch between tabs and when you click the refresh button on the top-right.</p>
+<p>Using the From/To controls, you can limit the time span that is shown in the log viewer.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This section is coming soon.</p>
+<p>Only the last 1000 lines of each log are displayed to keep the user interface responsive. If you are looking for an older event, use the From/To fields to narrow down the time span.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The log files can also be viewed in the terminal using the journalctl command by providing the service name as argument. For example, “journalctl -u hermes_ui.service” shows the log of the webgui. You can see the names of the different services as tooltip when hovering over the tabs on the “Logs” page.</p>
 </div>
 </div>
 <div class="section" id="graphite">
@@ -207,7 +213,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced Topics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
