@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Advanced Topics" href="advanced.html" />
+    <link rel="next" title="Dashboard Gallery" href="dashboards.html" />
     <link rel="prev" title="Usage" href="usage.html" /> 
 </head>
 
@@ -93,9 +93,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#log-files">Log files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#graphite">Graphite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bookkeeer-with-redash">Bookkeeer with Redash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setting-alerts">Setting alerts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alerts">Alerts</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="dashboards.html">Dashboard Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
 </ul>
 <ul>
@@ -282,16 +283,69 @@
 </div>
 <div class="section" id="bookkeeer-with-redash">
 <h2>Bookkeeer with Redash<a class="headerlink" href="#bookkeeer-with-redash" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This section is coming soon.</p>
+<p>All Hermes components transfer real-time information about their activities to Hermes’ bookkeeper service, which acts as central monitoring hub. The bookkeeper service can be disabled if not needed, but it’s highly recommended to use it, as it allows analyzing which series have been processed (or discarded) and what the processing times were. Of course, it also keeps track of all errors and processing abnormalities that might occur. Moreover, because bookkeeper tracks all DICOM files that pass through the router, including series that are discarded, the bookkeeper can be used for data mining that exceeds the capabilities of many PACS systems (e.g., searching for series where a certain contrast agent has been administered).</p>
+<p>Bookkeeper is running as RESTful service on a TCP/IP port (by default 8080) and stores the received information in a PostgreSQL database, which can be queried for analytics purpose.</p>
+<p>The following information is stored in the database:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Table</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hermes_events</p></td>
+<td><p>General events of Hermes modules, e.g. startup or detected errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>webgui_events</p></td>
+<td><p>Activities of webgui, e.g. login attempts or configuration changes</p></td>
+</tr>
+<tr class="row-even"><td><p>dicom_files</p></td>
+<td><p>All received DICOM files with file name, file UID, and series UID</p></td>
+</tr>
+<tr class="row-odd"><td><p>dicom_series</p></td>
+<td><p>Information on all received series, incl relevant tag information</p></td>
+</tr>
+<tr class="row-even"><td><p>series_events</p></td>
+<td><p>All processing events related to one series, e.g. dispatch or discard</p></td>
+</tr>
+<tr class="row-odd"><td><p>file_events</p></td>
+<td><p>Currently unused</p></td>
+</tr>
+<tr class="row-even"><td><p>dicom_series_map</p></td>
+<td><p>Currently unused</p></td>
+</tr>
+</tbody>
+</table>
+<p>The tables dicom_series, series_events, and dicom_files can be joined using series_uid as common column, allowing to query the events associated with one series and the names of the individual DICOM files.</p>
+<p>A very convenient and powerful tool for working with the collected PostgreSQL data is the <a class="reference external" href="http://redash.io">Redash</a> web application, which has already been described in the installation section. Redash allows prototyping SQL queries right in the browser and provides a navigator for the database keys. The query results can be displayed as tables or graphically using various visualization options. The visualizations can then be embedded into dashboards, allowing to rapidly create custom dashboards for various applications without need for any programming besides formulating the SQL queries. The dashboards can even be made interactive using a set of available user controls that can be integrated into the SQL queries. Redash is equipped with a multi-user authorization system and can be used simultaneously by different users.</p>
+<p>Dashboards that we created for our own Hermes installation include:</p>
+<ul class="simple">
+<li><p>A dashboard to display all Hermes events in chronological order, with separate display of ERROR events and separate display of the web activity (“System Status”)</p></li>
+<li><p>A “Dispatch Browser” that allows reviewing which patient exams have been dispatched to a certain target within a selectable time span</p></li>
+<li><p>A “Patient Browser” that allows searching by patient name, sequence, MRN, or ACC and shows all matching images series</p></li>
+<li><p>A “Series Detail” dashboard that is cross-linked from the other dashboards and shows all collected information for a selected series, including all DICOM tags and processing events</p></li>
+</ul>
+<p>Instructions how to create these dashboards are provided in the <a class="reference internal" href="dashboards.html"><span class="doc">Dashboard Gallery</span></a>.</p>
 </div>
-</div>
-<div class="section" id="setting-alerts">
-<h2>Setting alerts<a class="headerlink" href="#setting-alerts" title="Permalink to this headline">¶</a></h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This section is coming soon.</p>
+<div class="section" id="alerts">
+<h2>Alerts<a class="headerlink" href="#alerts" title="Permalink to this headline">¶</a></h2>
+<p>It is highly recommended to setup alerts for processing errors and server problems, so that you are automatically notified if the Hermes router needs your attention. Both Grafana and Redash provide functions for automatic alerts that can be utilized. With both tools, alerts can be delivered via email. However, we recommend using a messaging tool that supports custom webhooks, such as <a class="reference external" href="https://slack.com">Slack</a>. In this way, alerts can be delivered in real-time and across multiple devices, including smartphones.</p>
+<p>Examples for useful alerts include:</p>
+<ul class="simple">
+<li><p>If the disk space on the server drops below a certain threshold [alert via Grafana]</p></li>
+<li><p>If the server cannot be reached (“pinged”) over the network [alert via Grafana]</p></li>
+<li><p>If the Hermes services (router, dispatcher, cleaner) have not notified Graphite for a longer period [alert via Grafana]</p></li>
+<li><p>If bookkeeper has received any error notifications [alert via Redash]</p></li>
+<li><p>If the number of series dispatched to a certain target falls below the expected value [alert via Redash]</p></li>
+</ul>
+<p>In addition to the alerting options provided by Grafana and Redash, it is also possible setup custom notifications via a small Python script that is periodically executed and that calls the webhooks of your messaging service.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If you develop your own alert scripts, make sure to NEVER post any sensitive patient information (PHI) to the messaging service</p>
 </div>
 </div>
 </div>
@@ -304,7 +358,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced Topics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dashboards.html" class="btn btn-neutral float-right" title="Dashboard Gallery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
