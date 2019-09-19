@@ -206,6 +206,12 @@ another process, an exception will be raised.</p>
 been locked by another process.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="common.config.write_configfile">
+<code class="sig-prename descclassname">common.config.</code><code class="sig-name descname">write_configfile</code><span class="sig-paren">(</span><em class="sig-param">json_content</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/config.html#write_configfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.config.write_configfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrites the config file using the JSON data passed as argument. Used by the config editor of the webgui.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-common.helper">
 <span id="common-helper"></span><h2>common.helper<a class="headerlink" href="#module-common.helper" title="Permalink to this headline">¶</a></h2>
@@ -326,6 +332,11 @@ will not be transmitted to the bookkeeper.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="common.monitor.s_events.MOVE">
+<code class="sig-name descname">MOVE</code><em class="property"> = 'MOVE'</em><a class="headerlink" href="#common.monitor.s_events.MOVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="common.monitor.s_events.REGISTERED">
 <code class="sig-name descname">REGISTERED</code><em class="property"> = 'REGISTERED'</em><a class="headerlink" href="#common.monitor.s_events.REGISTERED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -333,6 +344,11 @@ will not be transmitted to the bookkeeper.</p>
 <dl class="attribute">
 <dt id="common.monitor.s_events.ROUTE">
 <code class="sig-name descname">ROUTE</code><em class="property"> = 'ROUTE'</em><a class="headerlink" href="#common.monitor.s_events.ROUTE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="common.monitor.s_events.SUSPEND">
+<code class="sig-name descname">SUSPEND</code><em class="property"> = 'SUSPEND'</em><a class="headerlink" href="#common.monitor.s_events.SUSPEND" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -399,6 +415,11 @@ fully received and the DICOM tags have been parsed.</p>
 <em class="property">class </em><code class="sig-prename descclassname">common.monitor.</code><code class="sig-name descname">w_events</code><a class="reference internal" href="_modules/common/monitor.html#w_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#common.monitor.w_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Event types for monitoring the webgui activity.</p>
+<dl class="attribute">
+<dt id="common.monitor.w_events.CONFIG_EDIT">
+<code class="sig-name descname">CONFIG_EDIT</code><em class="property"> = 'CONFIG_EDIT'</em><a class="headerlink" href="#common.monitor.w_events.CONFIG_EDIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="common.monitor.w_events.LOGIN">
 <code class="sig-name descname">LOGIN</code><em class="property"> = 'LOGIN'</em><a class="headerlink" href="#common.monitor.w_events.LOGIN" title="Permalink to this definition">¶</a></dt>

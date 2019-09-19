@@ -164,14 +164,16 @@
 <span class="sd">cleaner.py</span>
 <span class="sd">==========</span>
 <span class="sd">The cleaner service of Hermes. Responsible for deleting processed data after</span>
-<span class="sd">retention time has passed.</span>
+<span class="sd">retention time has passed and if it is offpeak time. Offpeak is the time</span>
+<span class="sd">period when the cleaning has to be done, because cleaning I/O should be kept</span>
+<span class="sd">to minimum when receiving and sending exams.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">rmtree</span>
 <span class="kn">import</span> <span class="nn">daiquiri</span>
@@ -206,11 +208,11 @@
 
 <div class="viewcode-block" id="terminateProcess"><a class="viewcode-back" href="../cleaner.html#cleaner.terminateProcess">[docs]</a><span class="k">def</span> <span class="nf">terminateProcess</span><span class="p">(</span><span class="n">signalNumber</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Triggers the shutdown of the service.&quot;&quot;&quot;</span>
-    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.shutdown&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s2">&quot;events.shutdown&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shutdown requested&quot;</span><span class="p">)</span>
     <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">SHUTDOWN_REQUEST</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
     <span class="c1"># Note: main_loop can be read here because it has been declared as global variable</span>
-    <span class="k">if</span> <span class="s1">&#39;main_loop&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">main_loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;main_loop&quot;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">main_loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
         <span class="n">main_loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
     <span class="n">helper</span><span class="o">.</span><span class="n">triggerTerminate</span><span class="p">()</span></div>
 
@@ -220,7 +222,7 @@
     <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">isTerminated</span><span class="p">():</span>
         <span class="k">return</span>
 
-    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.run&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s2">&quot;events.run&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
@@ -239,8 +241,27 @@
 
     <span class="c1"># TODO: Adaptively reduce the retention time if the disk space is running low</span>
 
-    <span class="n">clean_dir</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span>
-    <span class="n">clean_dir</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">_is_offpeak</span><span class="p">(</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;offpeak_start&quot;</span><span class="p">],</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;offpeak_end&quot;</span><span class="p">],</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(),</span>
+    <span class="p">):</span>
+        <span class="n">clean_dir</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span>
+        <span class="n">clean_dir</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_is_offpeak</span><span class="p">(</span><span class="n">offpeak_start</span><span class="p">,</span> <span class="n">offpeak_end</span><span class="p">,</span> <span class="n">current_time</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">offpeak_start</span><span class="p">,</span> <span class="s2">&quot;%H:%M&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">offpeak_end</span><span class="p">,</span> <span class="s2">&quot;%H:%M&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error parsing offpeak time, please check configuration&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">end_time</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">current_time</span> <span class="o">&gt;=</span> <span class="n">start_time</span> <span class="ow">and</span> <span class="n">current_time</span> <span class="o">&lt;=</span> <span class="n">end_time</span>
+    <span class="c1"># End time is after midnight</span>
+    <span class="k">return</span> <span class="n">current_time</span> <span class="o">&gt;=</span> <span class="n">start_time</span> <span class="ow">or</span> <span class="n">current_time</span> <span class="o">&lt;=</span> <span class="n">end_time</span>
 
 
 <div class="viewcode-block" id="clean_dir"><a class="viewcode-back" href="../cleaner.html#cleaner.clean_dir">[docs]</a><span class="k">def</span> <span class="nf">clean_dir</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">):</span>
@@ -265,21 +286,18 @@
     <span class="n">series_uid</span> <span class="o">=</span> <span class="n">find_series_uid</span><span class="p">(</span><span class="n">delete_path</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">rmtree</span><span class="p">(</span><span class="n">delete_path</span><span class="p">)</span>
-        <span class="n">send_series_event</span><span class="p">(</span>
-            <span class="n">s_events</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">,</span>
-            <span class="n">series_uid</span><span class="p">,</span>
-            <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">f</span><span class="s2">&quot;Successful deleted folder </span><span class="si">{delete_path}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Deleted folder </span><span class="si">{delete_path}</span><span class="s2"> from </span><span class="si">{series_uid}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">send_series_event</span><span class="p">(</span><span class="n">s_events</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delete_path</span><span class="p">,</span> <span class="s2">&quot;Deleted folder&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unable to delete folder </span><span class="si">{delete_path}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="n">send_series_event</span><span class="p">(</span>
-            <span class="n">s_events</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
-            <span class="n">series_uid</span><span class="p">,</span>
-            <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">f</span><span class="s2">&quot;Error deleting folder </span><span class="si">{delete_path}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">s_events</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delete_path</span><span class="p">,</span> <span class="s2">&quot;Unable to delete folder&quot;</span>
+        <span class="p">)</span>
+        <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span>
+            <span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">,</span>
+            <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+            <span class="n">f</span><span class="s2">&quot;Unable to delete folder </span><span class="si">{delete_path}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -320,7 +338,13 @@
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">receiveSignal</span><span class="p">)</span>
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">terminateProcess</span><span class="p">)</span>
 
+    <span class="n">instance_name</span> <span class="o">=</span> <span class="s2">&quot;main&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">instance_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Instance name = </span><span class="si">{instance_name}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cleaner PID is: {os.getpid()}&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -329,12 +353,12 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Cannot start service. Going down.&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;cleaner&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;bookkeeper&quot;</span><span class="p">])</span>
+    <span class="n">monitor</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;cleaner&quot;</span><span class="p">,</span> <span class="n">instance_name</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;bookkeeper&quot;</span><span class="p">])</span>
     <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span>
         <span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">BOOT</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;PID = {os.getpid()}&quot;</span>
     <span class="p">)</span>
 
-    <span class="n">graphite_prefix</span> <span class="o">=</span> <span class="s2">&quot;hermes.cleaner.main&quot;</span>
+    <span class="n">graphite_prefix</span> <span class="o">=</span> <span class="s2">&quot;hermes.cleaner.&quot;</span> <span class="o">+</span> <span class="n">instance_name</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;graphite_ip&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -352,11 +376,12 @@
     <span class="p">)</span>
     <span class="n">main_loop</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s1">&#39;events.boot&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">helper</span><span class="o">.</span><span class="n">g_log</span><span class="p">(</span><span class="s2">&quot;events.boot&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Start the asyncio event loop for asynchronous function calls</span>
     <span class="n">helper</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
 
+    <span class="c1"># Process will exit here once the asyncio loop has been stopped</span>
     <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">SHUTDOWN</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Going down now&quot;</span><span class="p">)</span>
 </pre></div>

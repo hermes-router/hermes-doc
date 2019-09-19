@@ -175,7 +175,7 @@
 
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 
-<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span><span class="p">,</span> <span class="n">send_series_event</span>
+<span class="kn">from</span> <span class="nn">common.monitor</span> <span class="k">import</span> <span class="n">s_events</span><span class="p">,</span> <span class="n">send_series_event</span><span class="p">,</span> <span class="n">send_event</span><span class="p">,</span> <span class="n">h_events</span><span class="p">,</span> <span class="n">severity</span>
 <span class="kn">from</span> <span class="nn">dispatch.retry</span> <span class="k">import</span> <span class="n">increase_retry</span>
 <span class="kn">from</span> <span class="nn">dispatch.status</span> <span class="k">import</span> <span class="n">is_ready_for_sending</span>
 
@@ -195,6 +195,7 @@
 
 
 <span class="k">def</span> <span class="nf">_create_command</span><span class="p">(</span><span class="n">target_info</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Composes the command for calling the dcmsend tool from DCMTK, which is used for sending out the DICOMS.&quot;&quot;&quot;</span>
     <span class="n">target_ip</span> <span class="o">=</span> <span class="n">target_info</span><span class="p">[</span><span class="s2">&quot;target_ip&quot;</span><span class="p">]</span>
     <span class="n">target_port</span> <span class="o">=</span> <span class="n">target_info</span><span class="p">[</span><span class="s2">&quot;target_port&quot;</span><span class="p">]</span>
     <span class="n">target_aet_target</span> <span class="o">=</span> <span class="n">target_info</span><span class="p">[</span><span class="s2">&quot;target_aet_target&quot;</span><span class="p">]</span>
@@ -224,11 +225,19 @@
 
     <span class="k">if</span> <span class="n">target_info</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">delay</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Folder </span><span class="si">{source_folder}</span><span class="s2"> is ready for sending&quot;</span><span class="p">)</span>
+
+        <span class="n">series_uid</span><span class="o">=</span><span class="n">target_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;series_uid&quot;</span><span class="p">,</span> <span class="s2">&quot;series_uid-missing&quot;</span><span class="p">)</span> 
+        <span class="n">target_name</span><span class="o">=</span><span class="n">target_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target_name&quot;</span><span class="p">,</span> <span class="s2">&quot;target_name-missing&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">series_uid</span><span class="o">==</span><span class="s2">&quot;series_uid-missing&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">target_name</span><span class="o">==</span><span class="s2">&quot;target_name-missing&quot;</span><span class="p">):</span>
+            <span class="n">send_event</span><span class="p">(</span><span class="n">h_events</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">,</span> <span class="n">severity</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;Missing information for folder </span><span class="si">{source_folder}</span><span class="s2">&quot;</span><span class="p">)</span>    
+
         <span class="c1"># Create a .sending file to indicate that this folder is being sent,</span>
         <span class="c1"># otherwise the dispatcher would pick it up again if the transfer is</span>
         <span class="c1"># still going on</span>
         <span class="n">lock_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">source_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span>
         <span class="n">lock_file</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+
         <span class="n">command</span> <span class="o">=</span> <span class="n">_create_command</span><span class="p">(</span><span class="n">target_info</span><span class="p">,</span> <span class="n">source_folder</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Running command </span><span class="si">{command}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -246,26 +255,26 @@
                 <span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">_move_sent_directory</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">success_folder</span><span class="p">)</span>
+            <span class="n">send_series_event</span><span class="p">(</span><span class="n">s_events</span><span class="o">.</span><span class="n">MOVE</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">success_folder</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">dcmsend_error_message</span> <span class="o">=</span> <span class="n">DCMSEND_ERROR_CODES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="n">f</span><span class="s2">&quot;Failed command:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{command}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">because of </span><span class="si">{dcmsend_error_message}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-            <span class="n">send_series_event</span><span class="p">(</span>
-                <span class="n">s_events</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
-                <span class="n">target_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;series_uid&quot;</span><span class="p">,</span> <span class="s2">&quot;series_uid-missing&quot;</span><span class="p">),</span>
-                <span class="mi">0</span><span class="p">,</span>
-                <span class="n">target_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;target_name&quot;</span><span class="p">,</span> <span class="s2">&quot;target_name-missing&quot;</span><span class="p">),</span>
-                <span class="n">dcmsend_error_message</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">send_event</span><span class="p">(</span><span class="n">h_events</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">,</span> <span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;Error sending </span><span class="si">{series_uid}</span><span class="s2"> to </span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">send_series_event</span><span class="p">(</span><span class="n">s_events</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">dcmsend_error_message</span><span class="p">)</span>
             <span class="n">retry_increased</span> <span class="o">=</span> <span class="n">increase_retry</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">retry_max</span><span class="p">,</span> <span class="n">retry_delay</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">retry_increased</span><span class="p">:</span>
                 <span class="n">lock_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Max retries reached, moving to </span><span class="si">{error_folder}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Max retries reached, moving to </span><span class="si">{error_folder}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">send_series_event</span><span class="p">(</span><span class="n">s_events</span><span class="o">.</span><span class="n">SUSPEND</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="s2">&quot;Max retries reached&quot;</span><span class="p">)</span>
                 <span class="n">_move_sent_directory</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">error_folder</span><span class="p">)</span>
+                <span class="n">send_series_event</span><span class="p">(</span><span class="n">s_events</span><span class="o">.</span><span class="n">MOVE</span><span class="p">,</span> <span class="n">series_uid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">error_folder</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">send_event</span><span class="p">(</span><span class="n">h_events</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">,</span> <span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;Series suspended after reaching max retries&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Folder </span><span class="si">{source_folder}</span><span class="s2"> is *not* ready for sending&quot;</span><span class="p">)</span></div>
+        <span class="k">pass</span></div>
+        <span class="c1">#logger.warning(f&quot;Folder {source_folder} is *not* ready for sending&quot;)</span>
 
 
 <span class="k">def</span> <span class="nf">_move_sent_directory</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">destination_folder</span><span class="p">):</span>
@@ -274,19 +283,23 @@
 <span class="sd">    in the success folder. If so a new directory is create with a timestamp</span>
 <span class="sd">    as suffix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">destination_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">target_folder</span> <span class="o">=</span> <span class="n">destination_folder</span> <span class="o">/</span> <span class="p">(</span>
-            <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Moving </span><span class="si">{source_folder}</span><span class="s2"> to </span><span class="si">{target_folder}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">target_folder</span><span class="p">,</span> <span class="n">copy_function</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">)</span>
-        <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">target_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="n">f</span><span class="s2">&quot;Moving </span><span class="si">{source_folder}</span><span class="s2"> to {destination_folder / source_folder.name}&quot;</span>
-        <span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">destination_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="p">(</span><span class="n">destination_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">destination_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">target_folder</span> <span class="o">=</span> <span class="n">destination_folder</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Moving </span><span class="si">{source_folder}</span><span class="s2"> to </span><span class="si">{target_folder}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">target_folder</span><span class="p">,</span> <span class="n">copy_function</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">target_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Moving </span><span class="si">{source_folder}</span><span class="s2"> to {destination_folder / source_folder.name}&quot;</span>
+            <span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">source_folder</span><span class="p">,</span> <span class="n">destination_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">destination_folder</span> <span class="o">/</span> <span class="n">source_folder</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="s2">&quot;.sending&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Error moving folder </span><span class="si">{source_folder}</span><span class="s2"> to </span><span class="si">{destination_folder}</span><span class="s2">&quot;</span><span class="p">)</span>        
+        <span class="n">send_event</span><span class="p">(</span><span class="n">h_events</span><span class="o">.</span><span class="n">PROCESSING</span><span class="p">,</span> <span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;Error moving </span><span class="si">{source_folder}</span><span class="s2"> to </span><span class="si">{destination_folder}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>

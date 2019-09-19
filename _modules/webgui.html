@@ -178,6 +178,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">daiquiri</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="k">import</span> <span class="n">Starlette</span>
 <span class="kn">from</span> <span class="nn">starlette.staticfiles</span> <span class="k">import</span> <span class="n">StaticFiles</span>
@@ -827,12 +828,66 @@
 <span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">configuration</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Shows the current configuration of the hermes appliance.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;configuration.html&quot;</span>
+    <span class="n">config_edited</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">query_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edited&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
     <span class="n">os_info</span><span class="o">=</span><span class="n">distro</span><span class="o">.</span><span class="n">linux_distribution</span><span class="p">()</span>
     <span class="n">os_string</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{os_info[0]}</span><span class="s2"> Version </span><span class="si">{os_info[1]}</span><span class="s2"> (</span><span class="si">{os_info[2]}</span><span class="s2">)&quot;</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="o">.</span><span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">,</span> <span class="s2">&quot;os_string&quot;</span><span class="p">:</span> <span class="n">os_string</span><span class="p">}</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="o">.</span><span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">,</span> <span class="s2">&quot;os_string&quot;</span><span class="p">:</span> <span class="n">os_string</span><span class="p">,</span> <span class="s2">&quot;config_edited&quot;</span><span class="p">:</span> <span class="n">config_edited</span><span class="p">}</span>
     <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="configuration_edit"><a class="viewcode-back" href="../webgui.html#webgui.configuration_edit">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/configuration/edit&#39;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">configuration_edit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shows a configuration editor&quot;&quot;&quot;</span>
+
+    <span class="c1"># Check for existence of lock file</span>
+    <span class="n">cfg_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">configuration_filename</span><span class="p">)</span>
+    <span class="n">cfg_lock</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">cfg_file</span><span class="o">.</span><span class="n">parent</span><span class="o">/</span><span class="n">cfg_file</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.lock&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cfg_lock</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Configuration is being updated. Try again in a minute.&#39;</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cfg_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">config_content</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>    
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Error reading configuration file.&#39;</span><span class="p">)</span>
+
+    <span class="n">config_content</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">config_content</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;configuration_edit.html&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="o">.</span><span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">:</span> <span class="s2">&quot;configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;config_content&quot;</span><span class="p">:</span> <span class="n">config_content</span><span class="p">}</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">get_user_information</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="configuration_edit_post"><a class="viewcode-back" href="../webgui.html#webgui.configuration_edit_post">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/configuration/edit&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="nd">@requires</span><span class="p">([</span><span class="s1">&#39;authenticated&#39;</span><span class="p">,</span><span class="s1">&#39;admin&#39;</span><span class="p">],</span> <span class="n">redirect</span><span class="o">=</span><span class="s1">&#39;homepage&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">configuration_edit_post</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the configuration after post from editor&quot;&quot;&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">())</span>
+    <span class="n">editor_json</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;editor&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validated_json</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">editor_json</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Invalid JSON data transferred.&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">write_configfile</span><span class="p">(</span><span class="n">validated_json</span><span class="p">)</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read_config</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PlainTextResponse</span><span class="p">(</span><span class="s1">&#39;Unable to write config file. Might be locked.&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Updates hermes configuration file.&#39;</span><span class="p">)</span>     
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">CONFIG_EDIT</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">RedirectResponse</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">&#39;/configuration?edited=1&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">303</span><span class="p">)</span></div>
 
 
 <span class="c1">###################################################################################</span>
@@ -844,7 +899,7 @@
     <span class="sd">&quot;&quot;&quot;Shows the login page.&quot;&quot;&quot;</span>
     <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;login.html&quot;</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="o">.</span><span class="n">hermes_version</span> <span class="p">}</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="o">.</span><span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;appliance_name&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;appliance_name&#39;</span><span class="p">,</span><span class="s1">&#39;Hermes Router&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
 
 
@@ -879,7 +934,7 @@
         <span class="n">monitor</span><span class="o">.</span><span class="n">send_webgui_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">w_events</span><span class="o">.</span><span class="n">LOGIN_FAIL</span><span class="p">,</span> <span class="n">form</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span> <span class="n">source_ip</span><span class="p">)</span>
 
         <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;login.html&quot;</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;invalid_password&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span> <span class="s2">&quot;invalid_password&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;hermes_version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="o">.</span><span class="n">hermes_version</span><span class="p">,</span> <span class="s2">&quot;appliance_name&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;appliance_name&#39;</span><span class="p">,</span><span class="s1">&#39;Hermes Router&#39;</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">return</span> <span class="n">templates</span><span class="o">.</span><span class="n">TemplateResponse</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></div>
 
 

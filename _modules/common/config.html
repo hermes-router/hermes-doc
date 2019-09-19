@@ -180,14 +180,16 @@
     <span class="s1">&#39;discard_folder&#39;</span>           <span class="p">:</span>     <span class="s1">&#39;./discard&#39;</span><span class="p">,</span>
     <span class="s1">&#39;router_scan_interval&#39;</span>     <span class="p">:</span>               <span class="mi">1</span><span class="p">,</span> <span class="c1"># in seconds</span>
     <span class="s1">&#39;dispatcher_scan_interval&#39;</span> <span class="p">:</span>               <span class="mi">1</span><span class="p">,</span> <span class="c1"># in seconds</span>
-    <span class="s1">&#39;cleaner_scan_interval&#39;</span>    <span class="p">:</span>              <span class="mi">10</span><span class="p">,</span> <span class="c1"># in seconds</span>
-    <span class="s1">&#39;retention&#39;</span>                <span class="p">:</span>          <span class="mi">432000</span><span class="p">,</span> <span class="c1"># in seconds (5 days)</span>
+    <span class="s1">&#39;cleaner_scan_interval&#39;</span>    <span class="p">:</span>              <span class="mi">60</span><span class="p">,</span> <span class="c1"># in seconds</span>
+    <span class="s1">&#39;retention&#39;</span>                <span class="p">:</span>          <span class="mi">259200</span><span class="p">,</span> <span class="c1"># in seconds (3 days)</span>
     <span class="s1">&#39;retry_delay&#39;</span>              <span class="p">:</span>             <span class="mi">900</span><span class="p">,</span> <span class="c1"># in seconds (15 min)</span>
     <span class="s1">&#39;retry_max&#39;</span>                <span class="p">:</span>               <span class="mi">5</span><span class="p">,</span>
     <span class="s1">&#39;series_complete_trigger&#39;</span>  <span class="p">:</span>              <span class="mi">60</span><span class="p">,</span> <span class="c1"># in seconds</span>
     <span class="s1">&#39;graphite_ip&#39;</span>              <span class="p">:</span>              <span class="s1">&#39;&#39;</span><span class="p">,</span>
     <span class="s1">&#39;graphite_port&#39;</span>            <span class="p">:</span>            <span class="mi">2003</span><span class="p">,</span>
     <span class="s1">&#39;bookkeeper&#39;</span>               <span class="p">:</span>  <span class="s1">&#39;0.0.0.0:8080&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;offpeak_start&#39;</span>            <span class="p">:</span>         <span class="s1">&#39;22:00&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;offpeak_end&#39;</span>              <span class="p">:</span>         <span class="s1">&#39;06:00&#39;</span><span class="p">,</span>
     <span class="s1">&#39;targets&#39;</span>                  <span class="p">:</span>              <span class="p">{},</span>
     <span class="s1">&#39;rules&#39;</span>                    <span class="p">:</span>              <span class="p">{}</span>
 <span class="p">}</span>
@@ -273,6 +275,23 @@
 
     <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="s2">&quot;Saved new configuration.&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Stored configuration into: </span><span class="si">{configuration_file}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_configfile"><a class="viewcode-back" href="../../common.html#common.config.write_configfile">[docs]</a><span class="k">def</span> <span class="nf">write_configfile</span><span class="p">(</span><span class="n">json_content</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rewrites the config file using the JSON data passed as argument. Used by the config editor of the webgui.&quot;&quot;&quot;</span>
+    <span class="n">configuration_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">configuration_filename</span><span class="p">)</span>
+
+    <span class="c1"># Check for existence of lock file</span>
+    <span class="n">lock_file</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">configuration_file</span><span class="o">.</span><span class="n">parent</span><span class="o">/</span><span class="n">configuration_file</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.lock&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">lock_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ResourceWarning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Configuration file locked: </span><span class="si">{lock_file}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">configuration_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_content</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span> <span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="s2">&quot;Wrote configuration file.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Wrote configuration into: </span><span class="si">{configuration_file}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="checkFolders"><a class="viewcode-back" href="../../common.html#common.config.checkFolders">[docs]</a><span class="k">def</span> <span class="nf">checkFolders</span><span class="p">():</span>

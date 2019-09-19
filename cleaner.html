@@ -182,7 +182,9 @@
 <div class="section" id="cleaner-py">
 <h2>cleaner.py<a class="headerlink" href="#cleaner-py" title="Permalink to this headline">¶</a></h2>
 <p>The cleaner service of Hermes. Responsible for deleting processed data after
-retention time has passed.</p>
+retention time has passed and if it is offpeak time. Offpeak is the time
+period when the cleaning has to be done, because cleaning I/O should be kept
+to minimum when receiving and sending exams.</p>
 <dl class="function">
 <dt id="cleaner.clean">
 <code class="sig-prename descclassname">cleaner.</code><code class="sig-name descname">clean</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cleaner.html#clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cleaner.clean" title="Permalink to this definition">¶</a></dt>

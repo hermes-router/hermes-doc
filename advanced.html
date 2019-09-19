@@ -202,10 +202,15 @@
 </div>
 <div class="section" id="additional-settings">
 <h2>Additional settings<a class="headerlink" href="#additional-settings" title="Permalink to this headline">¶</a></h2>
-<p>Advanced settings can be adjusted in the file hermes.json. These changes need to be done using a Linux text editor, e.g. nano.</p>
+<p>Advanced settings can be reviewed and adjusted on the Configuration page of the webgui. To change the settings, click the “Edit Settings” button at the bottom of the page. Once saved, the different service modules will automatically load the updated configuration.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>It is required to shutdown all Hermes services (via the webgui or systemctl command) before this file should be edited. Make sure to preserve correct formatting of the .json file.</p>
+<p>Make sure to preserve correct JSON formatting of the settings. The webgui will automatically check the syntax before saving the file.</p>
+</div>
+<p>Alternatively to using the webgui, the changes can also be made by directly editing the file hermes.json with a Linux text editor, e.g. nano.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>When editing the configuration file directly, it is required to shutdown all Hermes services prior to making any changes (via the webgui or systemctl command).</p>
 </div>
 <p>The following settings can be customized (default values can be found in default_hermes.json):</p>
 <table class="docutils align-default">
@@ -263,6 +268,12 @@
 </tr>
 <tr class="row-even"><td><p>retention</p></td>
 <td><p>Duration how long files will be kept before deletion (in sec)</p></td>
+</tr>
+<tr class="row-odd"><td><p>offpeak_start</p></td>
+<td><p>Start of the off-peak work hours (in 24h format)</p></td>
+</tr>
+<tr class="row-even"><td><p>offpeak_end</p></td>
+<td><p>End of the off-peak work hours (in 24h format)</p></td>
 </tr>
 <tr class="row-odd"><td><p>targets</p></td>
 <td><p>Configured targets - should be edited via webgui</p></td>
