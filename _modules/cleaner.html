@@ -235,17 +235,16 @@
         <span class="p">)</span>
         <span class="k">return</span>
 
-    <span class="n">success_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;success_folder&quot;</span><span class="p">]</span>
-    <span class="n">discard_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;discard_folder&quot;</span><span class="p">]</span>
-    <span class="n">retention</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;retention&quot;</span><span class="p">])</span>
-
     <span class="c1"># TODO: Adaptively reduce the retention time if the disk space is running low</span>
 
     <span class="k">if</span> <span class="n">_is_offpeak</span><span class="p">(</span>
         <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;offpeak_start&quot;</span><span class="p">],</span>
         <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;offpeak_end&quot;</span><span class="p">],</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(),</span>
+        <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
     <span class="p">):</span>
+        <span class="n">success_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;success_folder&quot;</span><span class="p">]</span>
+        <span class="n">discard_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;discard_folder&quot;</span><span class="p">]</span>
+        <span class="n">retention</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">hermes</span><span class="p">[</span><span class="s2">&quot;retention&quot;</span><span class="p">])</span>
         <span class="n">clean_dir</span><span class="p">(</span><span class="n">success_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span>
         <span class="n">clean_dir</span><span class="p">(</span><span class="n">discard_folder</span><span class="p">,</span> <span class="n">retention</span><span class="p">)</span></div>
 

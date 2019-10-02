@@ -172,6 +172,7 @@
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="web-interface">
 <h2>Web interface<a class="headerlink" href="#web-interface" title="Permalink to this headline">¶</a></h2>
+<a class="border reference internal image-reference" href="_images/ui_login.png"><img alt="_images/ui_login.png" class="border align-center" src="_images/ui_login.png" style="width: 550px;" /></a>
 <p>Hermes can be conveniently configured and controlled using the web-based user interface. To access it, use a modern web browser (e.g., Chrome or Firefox) and enter the IP of your Hermes server as URL. Depending on the port that you have selected during the installation (by default 8000), you need to add “:8000” to the URL.</p>
 <p>During the installation, Hermes creates a “seed account” that you need to use for the first login. You will be asked to change the password after the first login.</p>
 <div class="admonition note">
@@ -182,6 +183,7 @@
 </div>
 <div class="section" id="user-management">
 <h2>User management<a class="headerlink" href="#user-management" title="Permalink to this headline">¶</a></h2>
+<a class="border reference internal image-reference" href="_images/ui_users.png"><img alt="_images/ui_users.png" class="border align-center" src="_images/ui_users.png" style="width: 550px;" /></a>
 <p>Users can be created, modified, and deleted on the “Users” page. There are two types of users: Normal users, who can view the router configuration and status but not change anything, and administrators, who have full access. Users with administration rights are indicated by an icon with a shield in the user list.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -190,7 +192,9 @@
 </div>
 <div class="section" id="system-status-and-control">
 <h2>System status and control<a class="headerlink" href="#system-status-and-control" title="Permalink to this headline">¶</a></h2>
+<a class="border reference internal image-reference" href="_images/ui_status.png"><img alt="_images/ui_status.png" class="border align-center" src="_images/ui_status.png" style="width: 550px;" /></a>
 <p>You can see the status of the different Hermes service components on the “Overview” page. If a service is running, it will be shown in green, otherwise in red. In normal operation, everything should be green.</p>
+<a class="border reference internal image-reference" href="_images/ui_status_control.png"><img alt="_images/ui_status_control.png" class="border align-center" src="_images/ui_status_control.png" style="width: 550px;" /></a>
 <p>You can start, stop, and restart services by clicking the “Service Control” button. This will show a dialog where you can select which service(s) to control and which operation to execute (e.g., start or stop). If a service does not react at all anymore, it is also possible to kill a service.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -205,8 +209,10 @@
 </div>
 <div class="section" id="defining-targets">
 <h2>Defining targets<a class="headerlink" href="#defining-targets" title="Permalink to this headline">¶</a></h2>
+<a class="border reference internal image-reference" href="_images/ui_targets.png"><img alt="_images/ui_targets.png" class="border align-center" src="_images/ui_targets.png" style="width: 550px;" /></a>
 <p>DICOM nodes that should receive the routed series can be defined and modified on the “Targets” page. Here, you will see a list of the currently configured targets. By clicking on one item, you can see the target details (e.g., the IP address). You can also test if the target can be reached by clicking the “Test” button, which will first try to ping the server and afterwards open a C-Echo association. The target can only receive images if both tests are successful.</p>
 <p>Click the “Add New” button to create a new target. This can be done during normal operation of the router, i.e. it is not necessary to stop any of the router service.</p>
+<a class="border reference internal image-reference" href="_images/ui_target_edit.png"><img alt="_images/ui_target_edit.png" class="border align-center" src="_images/ui_target_edit.png" style="width: 550px;" /></a>
 <p>After choosing a name for the target, you can enter the settings of the DICOM connection settings. Here, you need to enter the IP address, port, the target AET (application entity title) that should be called on the receiver side, and the source AET with which Hermes identifies itself to the target.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -216,7 +222,9 @@
 </div>
 <div class="section" id="defining-routing-rules">
 <h2>Defining routing rules<a class="headerlink" href="#defining-routing-rules" title="Permalink to this headline">¶</a></h2>
+<a class="border reference internal image-reference" href="_images/ui_rules.png"><img alt="_images/ui_rules.png" class="border align-center" src="_images/ui_rules.png" style="width: 550px;" /></a>
 <p>When you have configured a target, you can add routing rules that define which DICOM series should be forwarded to that target. This can be done on the “Rules” page. Again, it is not necessary to stop Hermes while defining new rules. The different Hermes services will automatically load the new configuration once the rule has been saved. Click the “Add New” button to create a new rule, or click on any of the existing rules and select “Edit” to modify it.</p>
+<a class="border reference internal image-reference" href="_images/ui_rules_edit.png"><img alt="_images/ui_rules_edit.png" class="border align-center" src="_images/ui_rules_edit.png" style="width: 550px;" /></a>
 <p>The routing rule is evaluated for every incoming DICOM series using a set of DICOM sets that have been extracted from the DICOM files. To see the full list of DICOM tags available for writing rules, click the “Show Tags” button.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -240,6 +248,7 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>float(@SliceThickness@) &lt; 2.0
 </pre></div>
 </div>
+<a class="border reference internal image-reference" href="_images/ui_rules_test.png"><img alt="_images/ui_rules_test.png" class="border align-center" src="_images/ui_rules_test.png" style="width: 550px;" /></a>
 <p>To test a routing rule before activating it, click the icon with the cog wheels on the left side of input box. If you see a red icon in the dialog, the rule is invalid (the dialog will also tell you why). If the rule is valid, the dialog will test if the rule would trigger if a DICOM series with the values shown in the lower part of the dialog would arrive. You can modify these values and test if the rule acts as expected.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
