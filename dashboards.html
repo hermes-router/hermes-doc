@@ -90,7 +90,15 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Dashboard Gallery</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Dashboard Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#router-health">Router Health</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dispatch-explorer">Dispatch Explorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#last-series-received">Last Series Received</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#received-series">Received Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#series-events">Series Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#system-status">System Status</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
 </ul>
 <ul>
@@ -167,9 +175,257 @@
             
   <div class="section" id="dashboard-gallery">
 <h1>Dashboard Gallery<a class="headerlink" href="#dashboard-gallery" title="Permalink to this headline">¶</a></h1>
+<p>Using Redash and Graphite, various custom dashboards can be created that visualize and analyze the data collected by the Hermes router. Below are examples for dashboards that we created for our installation (the corresponding Redash queries are shown in SQL syntax, so that the dashboards can be reproduced).</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#router-health" id="id1">Router Health</a></p></li>
+<li><p><a class="reference internal" href="#dispatch-explorer" id="id2">Dispatch Explorer</a></p></li>
+<li><p><a class="reference internal" href="#last-series-received" id="id3">Last Series Received</a></p></li>
+<li><p><a class="reference internal" href="#received-series" id="id4">Received Series</a></p></li>
+<li><p><a class="reference internal" href="#series-events" id="id5">Series Events</a></p></li>
+<li><p><a class="reference internal" href="#system-status" id="id6">System Status</a></p></li>
+</ul>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This section is coming soon.</p>
+<p>Areas containing PHI have been blinded in the screenshots.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="router-health">
+<h2><a class="toc-backref" href="#id1">Router Health</a><a class="headerlink" href="#router-health" title="Permalink to this headline">¶</a></h2>
+<p>The health of the Hermes router can be monitored using Graphite for data collection and Grafana for dashboard creation and alerting. Shown below is an exemplary dashboard that we are using to monitor our router, which combines data provided by the collectd service running on the server, by the collectd service running on a different server (for measuring the ping response), and directly by the different Hermes services.</p>
+<p>The diagram shown in the top-left utilizes the data transmitted by the Hermes services during each run. If one of the colored blocks disappears for a longer period of time, it indicates that the process might be hanging. Useful are also the other diagrams in the top row, showing pending files and series in the incoming folder as reported by the router module, which can indicate if the server is not able to keep up with the load created by the scanners.</p>
+<a class="border reference internal image-reference" href="_images/dashboards_graphite.png"><img alt="_images/dashboards_graphite.png" class="border align-center" src="_images/dashboards_graphite.png" style="width: 550px;" /></a>
+</div>
+<hr class="docutils" />
+<div class="section" id="dispatch-explorer">
+<h2><a class="toc-backref" href="#id2">Dispatch Explorer</a><a class="headerlink" href="#dispatch-explorer" title="Permalink to this headline">¶</a></h2>
+<p>The Redash dashboard “Dispatch Explorer” allows showing which patient series have been dispatched to a selected target in a selectable time frame. It links to the “Series Events” dashboard that summarizes all information collected for a particular series.</p>
+<a class="border reference internal image-reference" href="_images/dashboards_dispatchexplorer.png"><img alt="_images/dashboards_dispatchexplorer.png" class="border align-center" src="_images/dashboards_dispatchexplorer.png" style="width: 550px;" /></a>
+<p>It uses the following SQL queries (upper query: left-top table, lower query: left-bottom graph &amp; right table):</p>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="k">max</span><span class="p">(</span><span class="n">dicom_series</span><span class="p">.</span><span class="n">time</span><span class="p">)</span> <span class="k">as</span> <span class="n">Time</span><span class="p">,</span>
+<span class="k">min</span><span class="p">(</span><span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientname</span><span class="p">)</span> <span class="k">as</span> <span class="n">Patient</span><span class="p">,</span>
+<span class="k">min</span><span class="p">(</span><span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientid</span><span class="p">)</span> <span class="k">as</span> <span class="n">MRN</span><span class="p">,</span>
+<span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_accessionnumber</span> <span class="k">as</span> <span class="n">ACC</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="n">dicom_series</span><span class="p">.</span><span class="n">series_uid</span><span class="p">)</span> <span class="k">as</span> <span class="n">Series_Count</span>
+<span class="k">from</span> <span class="n">series_events</span>
+<span class="k">join</span> <span class="n">dicom_series</span> <span class="k">on</span> <span class="n">dicom_series</span><span class="p">.</span><span class="n">series_uid</span><span class="o">=</span><span class="n">series_events</span><span class="p">.</span><span class="n">series_uid</span>
+<span class="k">where</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;DISPATCH&#39;</span>
+<span class="k">and</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">target</span><span class="o">=</span><span class="s1">&#39;{{target}}&#39;</span>
+<span class="k">and</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">time</span> <span class="o">&gt;=</span><span class="s1">&#39;{{from}}&#39;</span>
+<span class="k">and</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">time</span> <span class="o">&lt;=</span> <span class="s1">&#39;{{to}}&#39;</span>
+<span class="k">group</span> <span class="k">by</span> <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_accessionnumber</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">time</span> <span class="k">desc</span>
+<span class="k">limit</span> <span class="mi">1000</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">time</span><span class="p">,</span>
+<span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientname</span> <span class="k">as</span> <span class="n">Patient</span><span class="p">,</span>
+<span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_seriesdescription</span> <span class="k">as</span> <span class="n">Series</span><span class="p">,</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">file_count</span> <span class="k">as</span> <span class="n">Files</span><span class="p">,</span>
+<span class="s1">&#39;&lt;a href=&quot;/dashboard/series-events_1?p_series_uid=&#39;</span> <span class="o">||</span> <span class="n">series_events</span><span class="p">.</span><span class="n">series_uid</span> <span class="o">||</span><span class="s1">&#39;&quot; target=&quot;_blank&quot; class=&quot;btn btn-primary btn-xs&quot;&gt;View&lt;/a&gt;&#39;</span> <span class="k">as</span> <span class="n">Info</span>
+<span class="k">from</span> <span class="n">series_events</span>
+<span class="k">join</span> <span class="n">dicom_series</span> <span class="k">on</span> <span class="n">dicom_series</span><span class="p">.</span><span class="n">series_uid</span><span class="o">=</span><span class="n">series_events</span><span class="p">.</span><span class="n">series_uid</span>
+<span class="k">where</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;DISPATCH&#39;</span>
+<span class="k">and</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">target</span><span class="o">=</span><span class="s1">&#39;{{target}}&#39;</span>
+<span class="k">and</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">time</span> <span class="o">&gt;=</span><span class="s1">&#39;{{from}}&#39;</span>
+<span class="k">and</span>
+<span class="n">series_events</span><span class="p">.</span><span class="n">time</span> <span class="o">&lt;=</span> <span class="s1">&#39;{{to}}&#39;</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">series_events</span><span class="p">.</span><span class="n">time</span> <span class="k">desc</span>
+<span class="k">limit</span> <span class="mi">1000</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="last-series-received">
+<h2><a class="toc-backref" href="#id3">Last Series Received</a><a class="headerlink" href="#last-series-received" title="Permalink to this headline">¶</a></h2>
+<p>The dashboard “Last Series Received” shows the time when the last series from any imaging device has been received. It can be used to detect if there are problems with the DICOM transfer from one of the scanners. The query can be easily modified to provide a trigger for automatic alerts.</p>
+<a class="border reference internal image-reference" href="_images/dashboards_lastseriesreceived.png"><img alt="_images/dashboards_lastseriesreceived.png" class="border align-center" src="_images/dashboards_lastseriesreceived.png" style="width: 550px;" /></a>
+<p>It uses the following query:</p>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="k">min</span><span class="p">(</span><span class="n">tag_manufacturermodelname</span><span class="p">)</span> <span class="k">as</span> <span class="ss">&quot;Scanner&quot;</span><span class="p">,</span>
+<span class="k">min</span><span class="p">(</span><span class="n">tag_stationname</span><span class="p">)</span> <span class="k">as</span> <span class="ss">&quot;Station&quot;</span><span class="p">,</span>
+<span class="n">tag_deviceserialnumber</span> <span class="k">as</span> <span class="ss">&quot;Serial Number&quot;</span><span class="p">,</span>
+<span class="k">max</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">as</span> <span class="ss">&quot;Last Transfer&quot;</span>
+<span class="k">from</span>
+<span class="n">dicom_series</span>
+<span class="k">where</span> <span class="p">(</span><span class="n">tag_deviceserialnumber</span> <span class="o">&lt;&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">is</span> <span class="k">true</span>
+<span class="k">group</span> <span class="k">by</span> <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_deviceserialnumber</span>
+<span class="k">order</span> <span class="k">by</span> <span class="k">max</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">desc</span>
+<span class="k">limit</span> <span class="mi">500</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="received-series">
+<h2><a class="toc-backref" href="#id4">Received Series</a><a class="headerlink" href="#received-series" title="Permalink to this headline">¶</a></h2>
+<p>The “Received Series” dashboard shows all series that have been received by the router in descending chronological order, with links to the “Series Events” dashboard for details on the series. Using the UI controls on top of the dashboard, series can be searched by patient name, MRN, ACC, and modality.</p>
+<a class="border reference internal image-reference" href="_images/dashboards_receivedseries.png"><img alt="_images/dashboards_receivedseries.png" class="border align-center" src="_images/dashboards_receivedseries.png" style="width: 550px;" /></a>
+<p>It uses the following query:</p>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="n">time</span><span class="p">,</span>
+<span class="n">tag_patientname</span> <span class="k">as</span> <span class="n">Patient_Name</span><span class="p">,</span>
+<span class="n">tag_patientid</span> <span class="k">as</span> <span class="n">MRN</span><span class="p">,</span>
+<span class="n">tag_accessionnumber</span> <span class="k">as</span> <span class="n">ACC</span><span class="p">,</span>
+<span class="n">tag_modality</span> <span class="k">as</span> <span class="n">Modality</span><span class="p">,</span>
+<span class="n">tag_seriesdescription</span> <span class="k">as</span> <span class="n">Series</span><span class="p">,</span>
+<span class="n">tag_protocolname</span> <span class="k">as</span> <span class="n">Protocol</span><span class="p">,</span>
+<span class="n">tag_bodypartexamined</span> <span class="k">as</span> <span class="n">Body_Part</span><span class="p">,</span>
+<span class="s1">&#39;&lt;a href=&quot;/dashboard/series-events_1?p_series_uid=&#39;</span> <span class="o">||</span> <span class="n">series_uid</span> <span class="o">||</span><span class="s1">&#39;&quot; target=&quot;_blank&quot; class=&quot;btn btn-primary btn-xs&quot;&gt;View&lt;/a&gt;&#39;</span> <span class="k">as</span> <span class="n">History</span>
+<span class="k">FROM</span>
+<span class="n">dicom_series</span>
+<span class="k">WHERE</span>
+<span class="k">CASE</span>
+    <span class="k">WHEN</span> <span class="s1">&#39;{{modality}}&#39;</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="k">THEN</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_modality</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
+    <span class="k">ELSE</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_modality</span> <span class="o">=</span> <span class="s1">&#39;{{modality}}&#39;</span>
+    <span class="k">END</span>
+<span class="k">AND</span>
+<span class="k">CASE</span>
+    <span class="k">WHEN</span> <span class="s1">&#39;{{patientname}}&#39;</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="k">THEN</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientname</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
+    <span class="k">ELSE</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientname</span> <span class="k">ilike</span> <span class="s1">&#39;%{{patientname}}%&#39;</span>
+    <span class="k">END</span>
+<span class="k">AND</span>
+<span class="k">CASE</span>
+    <span class="k">WHEN</span> <span class="s1">&#39;{{mrn}}&#39;</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="k">THEN</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientid</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
+    <span class="k">ELSE</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_patientid</span> <span class="k">ilike</span> <span class="s1">&#39;%{{mrn}}%&#39;</span>
+    <span class="k">END</span>
+<span class="k">AND</span>
+<span class="k">CASE</span>
+    <span class="k">WHEN</span> <span class="s1">&#39;{{acc}}&#39;</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="k">THEN</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_accessionnumber</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
+    <span class="k">ELSE</span>
+    <span class="n">dicom_series</span><span class="p">.</span><span class="n">tag_accessionnumber</span> <span class="k">ilike</span> <span class="s1">&#39;%{{acc}}%&#39;</span>
+    <span class="k">END</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">time</span> <span class="k">desc</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="series-events">
+<h2><a class="toc-backref" href="#id5">Series Events</a><a class="headerlink" href="#series-events" title="Permalink to this headline">¶</a></h2>
+<p>The “Series Events” dashboard shows all information collected for a particular series, including DICOM tag information on the left side and a journal of how this series has been processed on the right side.</p>
+<a class="border reference internal image-reference" href="_images/dashboards_seriesevents.png"><img alt="_images/dashboards_seriesevents.png" class="border align-center" src="_images/dashboards_seriesevents.png" style="width: 550px;" /></a>
+<p>It uses the following queries (upper query: left table, lower query: right table):</p>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="k">unnest</span><span class="p">(</span><span class="nb">array</span><span class="p">[</span>
+    <span class="s1">&#39;Series UID&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Acquisition Time&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Patient Name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DOB&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Gender&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MRN&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ACC&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Body Part&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Modality&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Study Description&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Series Description&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Protocol Name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Sequence Name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Scanning Sequence&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Sequence Variant&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Contrast Bolus Agent&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Scanner Model&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Scanner Serial&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Magnetic Field Strength&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Slice Thickness&#39;</span>
+<span class="p">])</span> <span class="k">AS</span> <span class="ss">&quot;Field&quot;</span><span class="p">,</span>
+<span class="k">unnest</span><span class="p">(</span><span class="nb">array</span><span class="p">[</span>
+    <span class="n">series_uid</span><span class="p">,</span>
+    <span class="n">tag_acquisitiondate</span> <span class="o">||</span> <span class="s1">&#39;, &#39;</span> <span class="o">||</span> <span class="n">tag_acquisitiontime</span><span class="p">,</span>
+    <span class="n">tag_patientname</span><span class="p">,</span>
+    <span class="n">tag_patientbirthdate</span><span class="p">,</span>
+    <span class="n">tag_patientsex</span><span class="p">,</span>
+    <span class="n">tag_patientid</span><span class="p">,</span>
+    <span class="n">tag_accessionnumber</span><span class="p">,</span>
+    <span class="n">tag_bodypartexamined</span><span class="p">,</span>
+    <span class="n">tag_modality</span><span class="p">,</span>
+    <span class="n">tag_studydescription</span><span class="p">,</span>
+    <span class="n">tag_seriesdescription</span><span class="p">,</span>
+    <span class="n">tag_protocolname</span><span class="p">,</span>
+    <span class="n">tag_sequencename</span><span class="p">,</span>
+    <span class="n">tag_scanningsequence</span><span class="p">,</span>
+    <span class="n">tag_sequencevariant</span><span class="p">,</span>
+    <span class="n">tag_contrastbolusagent</span><span class="p">,</span>
+    <span class="n">tag_manufacturermodelname</span><span class="p">,</span>
+    <span class="n">tag_deviceserialnumber</span><span class="p">,</span>
+    <span class="n">tag_magneticfieldstrength</span><span class="p">,</span>
+    <span class="n">tag_slicethickness</span>
+<span class="p">])</span> <span class="k">AS</span> <span class="ss">&quot;Value&quot;</span>
+<span class="k">FROM</span>
+<span class="n">dicom_series</span>
+<span class="k">where</span>
+<span class="n">series_uid</span> <span class="o">=</span> <span class="s1">&#39;{{series_uid}}&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="n">time</span> <span class="k">as</span> <span class="n">Time</span><span class="p">,</span>
+<span class="n">event</span> <span class="k">as</span> <span class="n">Event</span><span class="p">,</span>
+<span class="n">file_count</span> <span class="k">as</span> <span class="n">Files</span><span class="p">,</span>
+<span class="n">target</span> <span class="k">as</span> <span class="n">Target</span><span class="p">,</span>
+<span class="n">info</span> <span class="k">as</span> <span class="n">Info</span>
+<span class="k">from</span>
+<span class="n">series_events</span>
+<span class="k">where</span>
+<span class="n">series_uid</span> <span class="o">=</span> <span class="s1">&#39;{{series_uid}}&#39;</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">time</span> <span class="k">asc</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="system-status">
+<h2><a class="toc-backref" href="#id6">System Status</a><a class="headerlink" href="#system-status" title="Permalink to this headline">¶</a></h2>
+<p>The “System Status” dashboard shows all system and webgui events in descending chronological order. Moreover, it shows all error events in the top-right table.</p>
+<a class="border reference internal image-reference" href="_images/dashboards_systemstatus.png"><img alt="_images/dashboards_systemstatus.png" class="border align-center" src="_images/dashboards_systemstatus.png" style="width: 550px;" /></a>
+<p>It uses the following queries (upper query: left table, middle query: right-top, lower query: right-bottom table):</p>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="n">time</span> <span class="k">as</span> <span class="n">Time</span><span class="p">,</span>
+<span class="n">sender</span> <span class="k">as</span> <span class="n">Sender</span><span class="p">,</span>
+<span class="n">event</span> <span class="k">as</span> <span class="n">Event</span><span class="p">,</span>
+<span class="n">severity</span> <span class="k">as</span> <span class="n">Severity</span><span class="p">,</span>
+<span class="n">description</span> <span class="k">as</span> <span class="n">Description</span>
+<span class="k">from</span>
+<span class="n">hermes_events</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">time</span> <span class="k">desc</span>
+<span class="k">limit</span> <span class="mi">1000</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="n">time</span> <span class="k">as</span> <span class="n">Time</span><span class="p">,</span>
+<span class="n">sender</span> <span class="k">as</span> <span class="n">Sender</span><span class="p">,</span>
+<span class="n">event</span> <span class="k">as</span> <span class="n">Event</span><span class="p">,</span>
+<span class="n">severity</span> <span class="k">as</span> <span class="n">Severity</span><span class="p">,</span>
+<span class="n">description</span> <span class="k">as</span> <span class="n">Description</span>
+<span class="k">from</span>
+<span class="n">hermes_events</span>
+<span class="k">where</span> <span class="n">severity</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">time</span> <span class="k">desc</span>
+<span class="k">limit</span> <span class="mi">1000</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="k">select</span>
+<span class="n">time</span> <span class="k">as</span> <span class="n">Time</span><span class="p">,</span>
+<span class="n">webgui_events</span><span class="p">.</span><span class="k">user</span> <span class="k">as</span> <span class="k">User</span><span class="p">,</span>
+<span class="n">event</span> <span class="k">as</span> <span class="n">Event</span><span class="p">,</span>
+<span class="n">description</span> <span class="k">as</span> <span class="n">Description</span>
+<span class="k">from</span> <span class="n">webgui_events</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">time</span> <span class="k">desc</span><span class="p">;</span>
+</pre></div>
+</div>
 </div>
 </div>
 
