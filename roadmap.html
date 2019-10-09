@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Hermes 0.1a documentation</title>
+  <title>Development Roadmap &mdash; Hermes 0.1a documentation</title>
   
 
   
@@ -25,7 +25,6 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
-        <script type="text/javascript" src="_static/searchtools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -36,7 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Package webinterface" href="webinterface.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +63,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -100,9 +100,13 @@
 <li class="toctree-l1"><a class="reference internal" href="support.html">Discussion Board</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer Information</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Code Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Development Roadmap</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development Roadmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#planned">Planned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#completed">Completed</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -148,7 +152,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Development Roadmap</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,24 +169,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search
-      functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="development-roadmap">
+<h1>Development Roadmap<a class="headerlink" href="#development-roadmap" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="planned">
+<h2>Planned<a class="headerlink" href="#planned" title="Permalink to this headline">¶</a></h2>
+<p>The following features are planned for implementation in the next Hermes version(s).</p>
+<ul class="simple">
+<li><p>UI option for reprocessing discarded cases</p></li>
+<li><p>Processing priorities for rules (Normal, Priority, Off-Peak)</p></li>
+<li><p>Configurable webhooks on reception/dispatch of series</p></li>
+<li><p>Optional processing modules (executed prior to dispatching), allowing Hermes to be used also as DICOM processing platform</p></li>
+</ul>
+</div>
+<div class="section" id="completed">
+<h2>Completed<a class="headerlink" href="#completed" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="webinterface.html" class="btn btn-neutral float-left" title="Package webinterface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -227,14 +242,7 @@
     </script>
 
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>
