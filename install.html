@@ -185,14 +185,17 @@
 </div>
 <div class="section" id="installing-hermes">
 <h2>Installing Hermes<a class="headerlink" href="#installing-hermes" title="Permalink to this headline">¶</a></h2>
-<p>After finishing the Ubuntu installation procedure, the Offis DICOM toolkit (DCMTK) and gcc compiler need to be installed. A user called “hermes” should be created (the adduser command will ask for a password), and the Hermes installation file should be cloned using the shown Git command. By default, Hermes should be installed into the home directory of the user hermes.</p>
+<p>After finishing the Ubuntu installation procedure, the Offis DICOM toolkit (DCMTK), gcc compiler, and jq need to be installed. A user called “hermes” should be created (the adduser command will ask for a password), and the Hermes installation file should be cloned using the shown Git command. By default, Hermes should be installed into the home directory of the user hermes.</p>
 <p>Afterwards, the installation script should be executed. This will install the required Python runtime environment (Python 3.6 or higher) and create configuration files from the templates that are shipped with Hermes. Finally, the included “.service” files for running the Hermes modules as daemons need to be copied to the systemd folder and enabled via the “systemctl enable” command.</p>
 <p>You can perform these steps by copying the commands listed below into a bash shell. It is assumed that you are logged in as user with sudo rights.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">dcmtk</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">jq</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">adduser</span> <span class="n">hermes</span>
 <span class="n">ssh</span> <span class="n">hermes</span><span class="nd">@localhost</span>
 <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hermes</span><span class="o">-</span><span class="n">router</span><span class="o">/</span><span class="n">hermes</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">hermes</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="mf">0.1</span><span class="n">a</span>
 <span class="n">cd</span> <span class="o">~/</span><span class="n">hermes</span><span class="o">/</span><span class="n">installation</span>
 <span class="o">./</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">exit</span>
