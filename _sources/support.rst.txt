@@ -5,7 +5,7 @@ If you have questions or feature requests for the Hermes DICOM router, you can g
 
 .. important:: There are currently login issues with the chat when using Chrome as browser. Please either use Firefox or click the link below to open the discussion board in a separate window.
 
-`Hermes Developer Board <https://gitter.im/hermes-router/community>`_
+`Hermes Support Board <https://gitter.im/hermes-router/community>`_
 
 .. raw:: html
 
