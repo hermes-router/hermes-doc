@@ -182,10 +182,10 @@
     <span class="c1"># Run the substitue operation manually instead of using</span>
     <span class="c1"># the standard string function to enforce that the values</span>
     <span class="c1"># read from the tags are treated as strings by default</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
-
-    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="n">opening</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span>
+    <span class="n">tags_found</span> <span class="o">=</span> <span class="p">[]</span>  
+    <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+        <span class="n">opening</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">opening</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">break</span>
         <span class="n">closing</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span><span class="n">opening</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -193,10 +193,12 @@
             <span class="k">break</span>
         <span class="n">tagstring</span><span class="o">=</span><span class="n">rule</span><span class="p">[</span><span class="n">opening</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">closing</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">tagstring</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-            <span class="n">tagvalue</span><span class="o">=</span><span class="n">tags</span><span class="p">[</span><span class="n">tagstring</span><span class="p">]</span>    
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tagvalue</span><span class="o">=</span><span class="s2">&quot;MissingTag&quot;</span>
-        <span class="n">rule</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="o">+</span><span class="n">tagstring</span><span class="o">+</span><span class="s2">&quot;@&quot;</span><span class="p">,</span><span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">tagvalue</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+            <span class="n">tags_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tagstring</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">=</span><span class="n">closing</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags_found</span><span class="p">:</span>
+        <span class="n">rule</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="o">+</span><span class="n">tag</span><span class="o">+</span><span class="s2">&quot;@&quot;</span><span class="p">,</span><span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">tags</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">rule</span></div>
 
 
@@ -204,16 +206,16 @@
     <span class="sd">&quot;&quot;&quot;Parses the given rule, replaces all tag variables with values from the given tags dictionary, and</span>
 <span class="sd">       evaluates the rule. If the rule is invalid, an exception will be raised.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Rule: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rule: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">rule</span><span class="o">=</span><span class="n">replace_tags</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span><span class="n">tags</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Evaluated: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluated: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">result</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="n">rule</span><span class="p">,{</span><span class="s2">&quot;__builtins__&quot;</span><span class="p">:</span> <span class="p">{}},</span><span class="n">safe_eval_cmds</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Result: </span><span class="si">{result}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result: </span><span class="si">{result}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;ERROR: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;WARNING: Invalid rule expression </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">,</span><span class="s1">&#39;&quot;&#39;</span><span class="o">+</span><span class="n">rule</span><span class="o">+</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-        <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span><span class="n">f</span><span class="s2">&quot;Invalid rule encountered </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WARNING: Invalid rule expression </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">,</span><span class="s1">&#39;&quot;&#39;</span><span class="o">+</span><span class="n">rule</span><span class="o">+</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+        <span class="n">monitor</span><span class="o">.</span><span class="n">send_event</span><span class="p">(</span><span class="n">monitor</span><span class="o">.</span><span class="n">h_events</span><span class="o">.</span><span class="n">CONFIG_UPDATE</span><span class="p">,</span><span class="n">monitor</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;Invalid rule encountered </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
@@ -221,13 +223,13 @@
     <span class="sd">&quot;&quot;&quot;Tests the given rule for validity using the given tags dictionary. Similar to parse_rule but with</span>
 <span class="sd">       more diagnostic output format for the testing dialog. Also warns about invalid tags.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Rule: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rule: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">rule</span><span class="o">=</span><span class="n">replace_tags</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span><span class="n">tags</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Evaluated: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluated: </span><span class="si">{rule}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;MissingTag&quot;</span> <span class="ow">in</span> <span class="n">rule</span><span class="p">):</span>
             <span class="k">return</span> <span class="s2">&quot;Rule contains invalid tag&quot;</span>
         <span class="n">result</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="n">rule</span><span class="p">,{</span><span class="s2">&quot;__builtins__&quot;</span><span class="p">:</span> <span class="p">{}},</span><span class="n">safe_eval_cmds</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Result: </span><span class="si">{result}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result: </span><span class="si">{result}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;True&quot;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -237,9 +239,14 @@
 
 
 <span class="c1">#if __name__ == &quot;__main__&quot;:</span>
-<span class="c1">#    result=parse_rule(sys.argv[1],{ &quot;ManufacturerModelName&quot;: &quot;Trio&quot; })</span>
-<span class="c1">#    logger.info(result)</span>
-<span class="c1">#    sys.exit(result)</span>
+<span class="c1">#    tags = { &quot;Tag1&quot;: &quot;One&quot;, &quot;TestTag&quot;: &quot;Two&quot;, &quot;AnotherTag&quot;: &quot;Three&quot; }</span>
+<span class="c1">#    result = &quot;(&#39;Tr&#39; in @Tag1@) | (@Tag1@ == &#39;Trio&#39;) @Three@ @AnotherTag@&quot;</span>
+<span class="c1">#    parsed=replace_tags(result,tags)</span>
+<span class="c1">#    print(result)</span>
+<span class="c1">#    print(parsed)</span>
+
+    <span class="c1">#result=parse_rule(sys.argv[1],{ &quot;ManufacturerModelName&quot;: &quot;Trio&quot; })</span>
+    <span class="c1">#sys.exit(result)</span>
 
 <span class="c1"># Example: &quot;(&#39;Tr&#39; in @ManufacturerModelName@) | (@ManufacturerModelName@ == &#39;Trio&#39;)&quot;</span>
 </pre></div>

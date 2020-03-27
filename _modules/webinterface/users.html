@@ -168,8 +168,8 @@
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">passlib.apps</span> <span class="k">import</span> <span class="n">custom_app_context</span> <span class="k">as</span> <span class="n">pwd_context</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">passlib.apps</span> <span class="kn">import</span> <span class="n">custom_app_context</span> <span class="k">as</span> <span class="n">pwd_context</span>
 <span class="kn">import</span> <span class="nn">daiquiri</span>
 
 <span class="n">daiquiri</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
@@ -192,7 +192,7 @@
     <span class="n">lock_file</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">users_file</span><span class="o">.</span><span class="n">parent</span><span class="o">/</span><span class="n">users_file</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.lock&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">lock_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ResourceWarning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Users file locked: </span><span class="si">{lock_file}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ResourceWarning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Users file locked: </span><span class="si">{lock_file}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">users_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="c1"># Get the modification date/time of the configuration file</span>
@@ -207,7 +207,7 @@
         <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&lt;=</span> <span class="n">users_timestamp</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">users_list</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Reading users from: </span><span class="si">{users_filename}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading users from: </span><span class="si">{users_filename}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">users_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
             <span class="n">users_list</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
@@ -235,7 +235,7 @@
     <span class="n">lock_file</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">users_file</span><span class="o">.</span><span class="n">parent</span><span class="o">/</span><span class="n">users_file</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.lock&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">lock_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">ResourceWarning</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Users file locked: </span><span class="si">{lock_file}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ResourceWarning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Users file locked: </span><span class="si">{lock_file}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">users_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">users_list</span><span class="p">,</span><span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -246,7 +246,7 @@
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="n">users_timestamp</span><span class="o">=</span><span class="mi">0</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Stored user list into: </span><span class="si">{users_filename}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stored user list into: </span><span class="si">{users_filename}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="evaluate_password"><a class="viewcode-back" href="../../webinterface.html#webinterface.users.evaluate_password">[docs]</a><span class="k">def</span> <span class="nf">evaluate_password</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
