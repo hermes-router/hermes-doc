@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,28 +11,30 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Service cleaner" href="cleaner.html" />
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -123,6 +125,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +164,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
@@ -188,70 +191,70 @@
 <h2>bookkeeper.py<a class="headerlink" href="#bookkeeper-py" title="Permalink to this headline">¶</a></h2>
 <p>The bookkeeper service of Hermes, which receives notifications from all Hermes services
 and stores the information in a Postgres database.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.create_database">
 <code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">create_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#create_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.create_database" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates all tables in the database if they do not exist.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.execute_db_operation">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">execute_db_operation</code><span class="sig-paren">(</span><em class="sig-param">operation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#execute_db_operation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.execute_db_operation" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">execute_db_operation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">operation</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#execute_db_operation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.execute_db_operation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes a previously prepared database operation.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.parse_and_submit_tags">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">parse_and_submit_tags</code><span class="sig-paren">(</span><em class="sig-param">payload</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#parse_and_submit_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.parse_and_submit_tags" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">parse_and_submit_tags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#parse_and_submit_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.parse_and_submit_tags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function that reads series information from the request body.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.post_hermes_event">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_hermes_event</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_hermes_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_hermes_event" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_hermes_event</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_hermes_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_hermes_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for receiving Hermes system events.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.post_series_event">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_series_event</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_series_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_series_event" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_series_event</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_series_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_series_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for logging all events related to one series.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.post_webgui_event">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_webgui_event</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_webgui_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_webgui_event" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">post_webgui_event</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#post_webgui_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.post_webgui_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for logging relevant events of the webgui.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.register_dicom">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">register_dicom</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#register_dicom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.register_dicom" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">register_dicom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#register_dicom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.register_dicom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for registering newly received DICOM files. Called by the getdcmtags module.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.register_series">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">register_series</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#register_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.register_series" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">register_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#register_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.register_series" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint that is called by the router whenever a new series arrives.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.shutdown">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from database on shutdown.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.startup">
 <em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">startup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#startup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.startup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects to database on startup. If the database does not exist, it will 
 be created.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="bookkeeper.test_endpoint">
-<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">test_endpoint</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#test_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.test_endpoint" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">bookkeeper.</code><code class="sig-name descname">test_endpoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bookkeeper.html#test_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bookkeeper.test_endpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Endpoint for testing that the bookkeeper is active.</p>
 </dd></dl>
 
@@ -278,11 +281,19 @@ be created.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -293,7 +304,6 @@ be created.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

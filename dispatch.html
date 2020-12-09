@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,28 +11,30 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Package routing" href="routing.html" />
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,7 +113,6 @@
 <li class="toctree-l2"><a class="reference internal" href="common.html">Package common</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Package dispatch</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-dispatch.process_dcmsend_result">dispatch.process_dcmsend_result</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-dispatch.retry">dispatch.retry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-dispatch.send">dispatch.send</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#send-py">send.py</a></li>
 </ul>
@@ -129,6 +130,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -167,7 +169,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
@@ -192,28 +194,16 @@
 <h1>Package dispatch<a class="headerlink" href="#package-dispatch" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-dispatch.process_dcmsend_result">
 <span id="dispatch-process-dcmsend-result"></span><h2>dispatch.process_dcmsend_result<a class="headerlink" href="#module-dispatch.process_dcmsend_result" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="dispatch.process_dcmsend_result.create_arg_parser">
 <code class="sig-prename descclassname">dispatch.process_dcmsend_result.</code><code class="sig-name descname">create_arg_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/process_dcmsend_result.html#create_arg_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.process_dcmsend_result.create_arg_parser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates and returns the ArgumentParser object.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="dispatch.process_dcmsend_result.parse">
-<code class="sig-prename descclassname">dispatch.process_dcmsend_result.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">result_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/process_dcmsend_result.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.process_dcmsend_result.parse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">dispatch.process_dcmsend_result.</code><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">result_file</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/process_dcmsend_result.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.process_dcmsend_result.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the dcmsend result file and returns a python dictionary.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-dispatch.retry">
-<span id="dispatch-retry"></span><h2>dispatch.retry<a class="headerlink" href="#module-dispatch.retry" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="dispatch.retry.increase_retry">
-<code class="sig-prename descclassname">dispatch.retry.</code><code class="sig-name descname">increase_retry</code><span class="sig-paren">(</span><em class="sig-param">source_folder</em>, <em class="sig-param">retry_max</em>, <em class="sig-param">retry_delay</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/retry.html#increase_retry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.retry.increase_retry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Increases the retries counter and set the wait counter to a new time
-in the future.
-:return True if increase has been successful or False if maximum retries
-has been reached</p>
 </dd></dl>
 
 </div>
@@ -223,28 +213,27 @@ has been reached</p>
 <h3>send.py<a class="headerlink" href="#send-py" title="Permalink to this headline">¶</a></h3>
 <p>The functions for sending DICOM series
 to target destinations.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="dispatch.send.execute">
-<code class="sig-prename descclassname">dispatch.send.</code><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">source_folder: pathlib.Path</em>, <em class="sig-param">success_folder: pathlib.Path</em>, <em class="sig-param">error_folder: pathlib.Path</em>, <em class="sig-param">retry_max</em>, <em class="sig-param">retry_delay</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/send.html#execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.send.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute the dcmsend command. It will create a .sending file to indicate that
-the folder is being sent. This is to prevent double sending. If there
-happens any error the .lock file is deleted and an .error file is created.
-Folder with .error files are _not_ ready for sending.</p>
+<code class="sig-prename descclassname">dispatch.send.</code><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_info</span></em>, <em class="sig-param"><span class="n">source_folder</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">success_folder</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">error_folder</span><span class="p">:</span> <span class="n">pathlib.Path</span></em>, <em class="sig-param"><span class="n">retry_max</span></em>, <em class="sig-param"><span class="n">retry_delay</span></em>, <em class="sig-param"><span class="n">monitor</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/send.html#execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.send.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the dcmsend command. If there happens any error the .lock file is 
+deleted and an .error file is created. Folder with .error files are 
+_not_ ready for sending.</p>
 </dd></dl>
 
 </div>
 </div>
 <div class="section" id="module-dispatch.status">
 <span id="dispatch-status"></span><h2>dispatch.status<a class="headerlink" href="#module-dispatch.status" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="dispatch.status.has_been_send">
-<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">has_been_send</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#has_been_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.has_been_send" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">has_been_send</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#has_been_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.has_been_send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the given folder has already been sent.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="dispatch.status.is_ready_for_sending">
-<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">is_ready_for_sending</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#is_ready_for_sending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.is_ready_for_sending" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">is_ready_for_sending</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#is_ready_for_sending"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.is_ready_for_sending" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a case in the outgoing folder is ready for sending by the dispatcher.</p>
 <p>No lock file (.lock) should be in sending folder and no error file (.error),
 if there is one copy/move is not done yet. Also at least some dicom files
@@ -252,9 +241,9 @@ should be there for sending. Also checks for a target.json file and if it is
 valid.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="dispatch.status.is_target_json_valid">
-<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">is_target_json_valid</code><span class="sig-paren">(</span><em class="sig-param">folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#is_target_json_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.is_target_json_valid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">dispatch.status.</code><code class="sig-name descname">is_target_json_valid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dispatch/status.html#is_target_json_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatch.status.is_target_json_valid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the target.json file exists and is also valid. Mandatory
 keys are target_ip, target_port and target_aet_target.</p>
 </dd></dl>
@@ -282,11 +271,19 @@ keys are target_ip, target_port and target_aet_target.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -297,7 +294,6 @@ keys are target_ip, target_port and target_aet_target.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,28 +11,30 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="install.html" />
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -112,6 +114,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -150,7 +153,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>What is Hermes?</li>
     
@@ -195,27 +198,27 @@
 <h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
 <p>The Hermes DICOM router consists of multiple service modules that interact with each other. The modularized architecture ensures high reliability of the routing system. For example, in the (unlikely) event that one of the modules crashes or needs to be restarted, the other modules continue to function (e.g., the router continues to receive images from the scanners). Moreover, all modules have been designed such that instances can be scaled-up if higher processing power is needed (e.g., the router can be configured to send out two or more series at the same time). Lastly, the modularized design makes it easy to extend the router’s capabilities by replacing individual modules with customized versions.</p>
 <div class="topic">
-<p class="topic-title first">Receiver</p>
+<p class="topic-title">Receiver</p>
 <p>The receiver service listens to incoming connections, receives DICOM images, and extracts relevant DICOM tags that can be used in the routing rules. It forks a separate process for every incoming connection, so that images from multiple senders can be received simultaneously. Internally, it uses the widely-established storescp tool from the Office DCMTK for image reception.</p>
 </div>
 <div class="topic">
-<p class="topic-title first">Router</p>
+<p class="topic-title">Router</p>
 <p>The router service monitors incoming images. Once a series is complete, it checks if any of the configured routing rules applies for the series. If that is case, it will create a dispatch request for the corresponding DICOM target. If no routing rule applies, it will discard the images (the images are kept for a retention period before final deletion, so that accidentally discarded images can still be recovered).</p>
 </div>
 <div class="topic">
-<p class="topic-title first">Dispatcher</p>
+<p class="topic-title">Dispatcher</p>
 <p>The dispatcher service will send the prepared series to the desired target DICOM nodes. In case the DICOM target is temporarily unavailable or if the DICOM transfer fails, it will retry the transfer after a configurable waiting period. After a configurable number of unsuccessful retries, the DICOM images will be moved to an error folder and an alert will be triggered. The transfer can later be restarted again.</p>
 </div>
 <div class="topic">
-<p class="topic-title first">Cleaner</p>
+<p class="topic-title">Cleaner</p>
 <p>The cleaner service deletes processed images after the (configurable) retention period has passed. This applies to discarded images (for which no routing rule had triggered) as well as to dispatched images (which have been successfully transferred to the desired targets). Because images are kept for a retention period and not deleted right away, it is possible to retrospectively route images for which no routing rule had been defined. The cleaner service is only active during off-peak hours (default: 10pm - 6am) to reduce I/O operations during regular work hours when a high number of series are received and dispatched.</p>
 </div>
 <div class="topic">
-<p class="topic-title first">Bookkeeper</p>
+<p class="topic-title">Bookkeeper</p>
 <p>The bookkeeper service acts as central monitoring instance for all router activity. It receives notifications from every router component and stores the data in a PostgreSQL database. This makes it possible to review the routing history of every image that passed through the router. The bookkeeper also stores extended information about the received series (e.g., the used contrast agent), so that it can be used as source for data mining. Moreover, it records all errors or processing abnormalities and can trigger automatic alerts.</p>
 </div>
 <div class="topic">
-<p class="topic-title first">Webgui</p>
+<p class="topic-title">Webgui</p>
 <p>The webgui module provides a convenient web-based user interface that allows configuring new targets and routing rules, as well as monitoring the router status. It uses an authorization system with personal accounts, which can either have full administrator rights or read-only rights. All relevant activities in the webgui are recorded by the bookkeeper, so that it is documented which user made which changes in the router configuration. It also provides a tool for testing routing rules prior to activation.</p>
 </div>
 </div>
@@ -241,11 +244,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -256,7 +267,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

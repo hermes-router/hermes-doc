@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,28 +11,30 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Package webinterface" href="webinterface.html" />
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -123,6 +125,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +164,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
@@ -186,47 +189,47 @@
 <h1>Package routing<a class="headerlink" href="#package-routing" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-routing.process_series">
 <span id="routing-process-series"></span><h2>routing.process_series<a class="headerlink" href="#module-routing.process_series" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="routing.process_series.FileLock">
-<em class="property">class </em><code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">FileLock</code><span class="sig-paren">(</span><em class="sig-param">path_for_lockfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#FileLock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.FileLock" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">FileLock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_for_lockfile</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#FileLock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.FileLock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Helper class that implements a file lock. The lock file will be removed also from the destructor so that
 no spurious lock files remain if exceptions are raised.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="routing.process_series.FileLock.free">
 <code class="sig-name descname">free</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#FileLock.free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.FileLock.free" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="routing.process_series.get_routing_targets">
-<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">get_routing_targets</code><span class="sig-paren">(</span><em class="sig-param">tagList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#get_routing_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.get_routing_targets" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">get_routing_targets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span></em>, <em class="sig-param"><span class="n">tagList</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#get_routing_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.get_routing_targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates the routing rules and returns a list with the desired targets.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="routing.process_series.process_error_files">
-<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">process_error_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#process_error_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.process_error_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">process_error_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#process_error_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.process_error_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Looks for error files, moves these files and the corresponding DICOM files to the error folder, 
 and sends an alert to the bookkeeper instance.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="routing.process_series.process_series">
-<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">process_series</code><span class="sig-paren">(</span><em class="sig-param">series_UID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#process_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.process_series" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">process_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span></em>, <em class="sig-param"><span class="n">series_UID</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#process_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.process_series" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes the series with the given series UID from the incoming folder.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="routing.process_series.push_series_discard">
-<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">push_series_discard</code><span class="sig-paren">(</span><em class="sig-param">fileList</em>, <em class="sig-param">series_UID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#push_series_discard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.push_series_discard" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">push_series_discard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span></em>, <em class="sig-param"><span class="n">fileList</span></em>, <em class="sig-param"><span class="n">series_UID</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#push_series_discard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.push_series_discard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Discards the series by moving all files into the “discard” folder, which is periodically cleared.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="routing.process_series.push_series_outgoing">
-<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">push_series_outgoing</code><span class="sig-paren">(</span><em class="sig-param">fileList</em>, <em class="sig-param">series_UID</em>, <em class="sig-param">transfer_targets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#push_series_outgoing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.push_series_outgoing" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">routing.process_series.</code><code class="sig-name descname">push_series_outgoing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">monitor</span></em>, <em class="sig-param"><span class="n">fileList</span></em>, <em class="sig-param"><span class="n">series_UID</span></em>, <em class="sig-param"><span class="n">transfer_targets</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/routing/process_series.html#push_series_outgoing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#routing.process_series.push_series_outgoing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the DICOM files of the series to a separate subfolder for each target in the outgoing folder.</p>
 </dd></dl>
 
@@ -253,11 +256,19 @@ and sends an alert to the bookkeeper instance.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -268,7 +279,6 @@ and sends an alert to the bookkeeper instance.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

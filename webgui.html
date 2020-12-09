@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,28 +11,30 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Package common" href="common.html" />
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -123,6 +125,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +164,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
@@ -187,235 +190,235 @@
 <div class="section" id="webgui-py">
 <h2>webgui.py<a class="headerlink" href="#webgui-py" title="Permalink to this headline">¶</a></h2>
 <p>The web-based graphical user interface of Hermes.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="webgui.ExtendedUser">
-<em class="property">class </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">ExtendedUser</code><span class="sig-paren">(</span><em class="sig-param">username: str</em>, <em class="sig-param">is_admin: False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#ExtendedUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.ExtendedUser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">ExtendedUser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">is_admin</span><span class="p">:</span> <span class="n">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#ExtendedUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.ExtendedUser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">starlette.authentication.SimpleUser</span></code></p>
-<dl class="method">
+<dl class="py method">
 <dt id="webgui.ExtendedUser.is_admin">
 <em class="property">property </em><code class="sig-name descname">is_admin</code><a class="headerlink" href="#webgui.ExtendedUser.is_admin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="webgui.SessionAuthBackend">
 <em class="property">class </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">SessionAuthBackend</code><a class="reference internal" href="_modules/webgui.html#SessionAuthBackend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.SessionAuthBackend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">starlette.authentication.AuthenticationBackend</span></code></p>
-<dl class="method">
+<dl class="py method">
 <dt id="webgui.SessionAuthBackend.authenticate">
-<em class="property">async </em><code class="sig-name descname">authenticate</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#SessionAuthBackend.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.SessionAuthBackend.authenticate" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">authenticate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#SessionAuthBackend.authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.SessionAuthBackend.authenticate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.add_new_user">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">add_new_user</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#add_new_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.add_new_user" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">add_new_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#add_new_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.add_new_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new user and redirects to the user-edit page.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.add_rule">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">add_rule</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#add_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.add_rule" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">add_rule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#add_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.add_rule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new routing rule and forwards the user to the rule edit page.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.add_target">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">add_target</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#add_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.add_target" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">add_target</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#add_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.add_target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new target.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.async_run">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">async_run</code><span class="sig-paren">(</span><em class="sig-param">cmd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#async_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.async_run" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">async_run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#async_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.async_run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the given command in a way compatible with ayncio.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.configuration">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">configuration</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.configuration" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">configuration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.configuration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the current configuration of the hermes appliance.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.configuration_edit">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">configuration_edit</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#configuration_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.configuration_edit" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">configuration_edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#configuration_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.configuration_edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows a configuration editor</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.configuration_edit_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">configuration_edit_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#configuration_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.configuration_edit_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">configuration_edit_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#configuration_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.configuration_edit_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the configuration after post from editor</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.control_services">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">control_services</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#control_services"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.control_services" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">control_services</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#control_services"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.control_services" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.emergency_response">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">emergency_response</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#emergency_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.emergency_response" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">emergency_response</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#emergency_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.emergency_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows emergency message about invalid configuration.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.error">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.error" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>An example error. Switch the <cite>debug</cite> setting to see either tracebacks or 500 pages.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.get_user_information">
-<code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">get_user_information</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#get_user_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.get_user_information" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">get_user_information</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#get_user_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.get_user_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns dictionary of values that should always be passed to the templates when the user is logged in.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.homepage">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">homepage</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#homepage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.homepage" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">homepage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#homepage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.homepage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Renders the index page that shows information about the system status.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.launch_emergency_app">
 <code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">launch_emergency_app</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#launch_emergency_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.launch_emergency_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches a minimal application to inform the user about the incorrect configuration</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.login">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">login</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.login" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">login</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.login" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the login page.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.login_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">login_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#login_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.login_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">login_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#login_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.login_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate the submitted login information. Redirects to index page if login information valid, otherwise back to login. 
 On the first login, the user will be directed to the settings page and asked to change the password.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.logout">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">logout</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.logout" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">logout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.logout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Logouts the users by clearing the session cookie.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.not_found">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">not_found</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">exc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#not_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.not_found" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">not_found</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">exc</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#not_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.not_found" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an HTTP 404 page.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.rules_delete_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_delete_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_delete_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_delete_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_delete_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_delete_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_delete_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes the given routing rule</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.rules_edit">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_edit</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_edit" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the edit page for the given routing rule.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.rules_edit_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_edit_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_edit_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_edit_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_edit_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the settings for the given routing rule.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.rules_test">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_test</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_test" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">rules_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#rules_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.rules_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evalutes if a given routing rule is valid. The rule and testing dictionary have to be passed as form parameters.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.server_error">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">server_error</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">exc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#server_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.server_error" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">server_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em>, <em class="sig-param"><span class="n">exc</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#server_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.server_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an HTTP 500 page.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.settings_edit">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">settings_edit</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#settings_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.settings_edit" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">settings_edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#settings_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.settings_edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the settings for the current user. Renders the same template as the normal user edit, but with parameter own_settings=True.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.show_first_log">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_first_log</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_first_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_first_log" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_first_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_first_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_first_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the first service entry and forward to corresponding log entry point.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.show_log">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_log</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_log" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render the log for the given service. The time range can be specified via URL parameters.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.show_rules">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_rules</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_rules" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_rules</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_rules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show all defined routing rules. Can be executed by all logged-in users.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.show_targets">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_targets</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_targets" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_targets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows all configured targets.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.show_users">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_users</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_users" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">show_users</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#show_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.show_users" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows all available users.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.targes_edit_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targes_edit_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targes_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targes_edit_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targes_edit_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targes_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targes_edit_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the given target using the form values posted with the request.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.targets_delete_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targets_delete_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targets_delete_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targets_delete_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targets_delete_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targets_delete_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targets_delete_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes the given target.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.targets_edit">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targets_edit</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targets_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targets_edit" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targets_edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targets_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targets_edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the edit page for the given target.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.targets_test_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targets_test_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targets_test_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targets_test_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">targets_test_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#targets_test_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.targets_test_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the connectivity of the given target by executing ping and c-echo requests.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.users_delete_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">users_delete_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#users_delete_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.users_delete_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">users_delete_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#users_delete_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.users_delete_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes the given users.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.users_edit">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">users_edit</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#users_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.users_edit" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">users_edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#users_edit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.users_edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the settings for a given user.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webgui.users_edit_post">
-<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">users_edit_post</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#users_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.users_edit_post" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">webgui.</code><code class="sig-name descname">users_edit_post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webgui.html#users_edit_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webgui.users_edit_post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the given user with settings passed as form parameters.</p>
 </dd></dl>
 
@@ -442,11 +445,19 @@ On the first login, the user will be directed to the settings page and asked to 
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -457,7 +468,6 @@ On the first login, the user will be directed to the settings page and asked to 
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

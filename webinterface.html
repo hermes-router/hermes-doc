@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,28 +11,30 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Development Roadmap" href="roadmap.html" />
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -125,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -163,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">Code Documentation</a> &raquo;</li>
         
@@ -188,7 +191,7 @@
 <h1>Package webinterface<a class="headerlink" href="#package-webinterface" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-webinterface.services">
 <span id="webinterface-services"></span><h2>webinterface.services<a class="headerlink" href="#module-webinterface.services" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.services.read_services">
 <code class="sig-prename descclassname">webinterface.services.</code><code class="sig-name descname">read_services</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/services.html#read_services"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.services.read_services" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the list of configured services from the configuration file. This list normally does not have to be changed, but 
@@ -198,7 +201,7 @@ can be modified if multiple instances of individual services should be used to i
 </div>
 <div class="section" id="module-webinterface.tagslist">
 <span id="webinterface-tagslist"></span><h2>webinterface.tagslist<a class="headerlink" href="#module-webinterface.tagslist" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.tagslist.read_tagslist">
 <code class="sig-prename descclassname">webinterface.tagslist.</code><code class="sig-name descname">read_tagslist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/tagslist.html#read_tagslist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.tagslist.read_tagslist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the list of supported DICOM tags with example values. This list is parsed from the C code of the getseqparam module.</p>
@@ -207,44 +210,44 @@ can be modified if multiple instances of individual services should be used to i
 </div>
 <div class="section" id="module-webinterface.users">
 <span id="webinterface-users"></span><h2>webinterface.users<a class="headerlink" href="#module-webinterface.users" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.create_users">
 <code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">create_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#create_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.create_users" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new users file and create seed admin account with name “admin” and password “router”.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.evaluate_password">
-<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">evaluate_password</code><span class="sig-paren">(</span><em class="sig-param">username</em>, <em class="sig-param">password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#evaluate_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.evaluate_password" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">evaluate_password</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em>, <em class="sig-param"><span class="n">password</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#evaluate_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.evaluate_password" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given password for the given user is correct. Hashed passwords are stored with salt.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.hash_password">
-<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">hash_password</code><span class="sig-paren">(</span><em class="sig-param">password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#hash_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.hash_password" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">hash_password</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">password</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#hash_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.hash_password" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hash the password using the passlib library.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.is_admin">
-<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">is_admin</code><span class="sig-paren">(</span><em class="sig-param">username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#is_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.is_admin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">is_admin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#is_admin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.is_admin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check in the user list if the given user has admin rights.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.needs_change_password">
-<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">needs_change_password</code><span class="sig-paren">(</span><em class="sig-param">username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#needs_change_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.needs_change_password" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">needs_change_password</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#needs_change_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.needs_change_password" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the given user has to change his password after login.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.read_users">
 <code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">read_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#read_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.read_users" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the user list from the configuration file. The file will only be read if it has been updated since the last
 function call. If the file does not exist, create a new user file.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="webinterface.users.save_users">
 <code class="sig-prename descclassname">webinterface.users.</code><code class="sig-name descname">save_users</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/webinterface/users.html#save_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#webinterface.users.save_users" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the users list into a file on the disk.</p>
@@ -273,11 +276,19 @@ function call. If the file does not exist, create a new user file.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Kai Tobias Block, Joshy Cyriac
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -288,7 +299,6 @@ function call. If the file does not exist, create a new user file.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
